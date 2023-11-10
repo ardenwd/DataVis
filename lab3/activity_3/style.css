@@ -44,8 +44,13 @@ text.playerLabelText{
 
 g:hover text.playerLabelText{
     visibility: visible;
+    font-size: 10px;
 }
 
 g:hover circle{
     opacity: 1;
+}
+
+text{
+    font-family: sans-serif;
 }
