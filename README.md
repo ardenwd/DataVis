@@ -1,12 +1,13 @@
-# DataVis
-The following are projects that I have completed in data visualization.
+# DataVis Projects
 
 ## Assignments for Intro to Info Visualization at Georgia Tech,
-built with a scaffolding provided by the instructor:
+[Interactive Baseball Statistics*](https://ardenwd.github.io/DataVis/lab3/activity_3/index.html)  
 
-### Interactive Baseball Statistics
-### Interactive Sorting by Letter Frequency
-### Small Multiples Stock Prices Graphs
+[Interactive Sorting by Letter Frequency*](https://ardenwd.github.io/DataVis/lab5/activity_3/index.html) 
+
+[Small Multiples Stock Prices Graphs*](https://ardenwd.github.io/DataVis/lab4/activity_3/index.html) 
+
+*built with a scaffolding provided by the instructor
 
 ## Personal Projects: 
-### NYC Taxi Cab Data Visualization
+[NYC Taxi Cab Data Visualization](https://ardenwd.github.io/DataVis/taxiVis)
