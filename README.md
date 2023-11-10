@@ -5,7 +5,7 @@
 
 [Interactive Sorting by Letter Frequency*](https://ardenwd.github.io/DataVis/lab5/activity3/index.html) 
 
-[Small Multiples Stock Prices Graphs*](https://ardenwd.github.io/DataVis/lab4/activity3/index.html) 
+[Small Multiples Stock Prices Graphs*](https://ardenwd.github.io/DataVis/lab4/activities_3/index.html) 
 
 *built with a scaffolding provided by the instructor
 
