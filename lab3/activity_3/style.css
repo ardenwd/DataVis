@@ -1,0 +1,51 @@
+
+
+body {
+    font-family: "Open Sans";
+}
+
+#main {
+    margin: 10px 20px;
+}
+
+text.label {
+    text-anchor: middle;
+    font-size: 11px;
+    fill: #555;
+    font-family: sans-serif;
+}
+
+.axis text {
+    fill: #555;
+}
+
+.axis line,
+.axis path {
+    stroke: #555;
+}
+
+text.title {
+    text-anchor: middle;
+    font-size: 14px;
+    fill: #333;
+}
+
+circle{
+    fill: blue;
+    opacity: 30%;
+}
+
+text.playerLabelText{
+    font-size: 5px;
+    transform: translate(-15px,-4px);
+    font-weight: 700;
+    visibility: hidden;
+}
+
+g:hover text.playerLabelText{
+    visibility: visible;
+}
+
+g:hover circle{
+    opacity: 1;
+}
