@@ -7,7 +7,7 @@
 
 [Small Multiples Stock Prices Graphs*](https://ardenwd.github.io/DataVis/lab4/activities_3/index.html) 
 
-*built with a scaffolding provided by the instructor
+*_built with a scaffolding provided by the instructor_
 
 ## Personal Projects: 
 [NYC Taxi Cab Data Visualization](https://ardenwd.github.io/DataVis/taxiVis)
