@@ -34,6 +34,55 @@ var brushCell;
 
 // ****** Add reusable components here ****** //
 
+//this function creates an object
+function SplomCell(x,y,col,row) {
+    this.x = x;
+    this.y = y;
+    this.col = col;
+    this.row = row;
+}
+
+//this protype will apply to all SplomCell objects
+//init() takes the g element for the cell and creates the rectangle frame for it
+//taking the layout parameters to create the dimensions
+SplomCell.prototype.init = function(g) {
+    var cell = d3.select(g);
+    cell.append('rect')
+        .attr('class', 'frame')
+        .attr('width', cellWidth - cellPadding)
+        .attr('height', cellHeight - cellPadding);
+}
+
+SplomCell.prototype.update = function(g, data) {
+    var cell = d3.select(g);
+
+    // Update the global x,yScale objects for this cell's x,y attribute domains
+    xScale.domain(extentByAttribute[this.x]);
+    yScale.domain(extentByAttribute[this.y]);
+
+    // Save a reference of this SplomCell, to use within anon function scopes
+    var _this = this;
+
+    var dots = cell.selectAll('.dot')
+        .data(data, function(d){
+            return d.name +'-'+d.year+'-'+d.cylinders; // Create a unique id for the car
+        });
+
+    var dotsEnter = dots.enter()
+        .append('circle')
+        .attr('class', 'dot')
+        .style("fill", function(d) { return colorScale(d.cylinders); })
+        .attr('r', 4);
+
+    dots.merge(dotsEnter).attr('cx', function(d){
+            return xScale(d[_this.x]);
+        })
+        .attr('cy', function(d){
+            return yScale(d[_this.y]);
+        });
+
+    dots.exit().remove();
+}
 
 
 d3.csv('cars.csv', dataPreprocessor).then(function(dataset) {
@@ -83,8 +132,33 @@ d3.csv('cars.csv', dataPreprocessor).then(function(dataset) {
 
 
         // ********* Your data dependent code goes here *********//
+        
+        //create an array of cells to maintain data attributes
+        //dataAttributes is a 4 item array, so this nest loop creates 16 entries into cells[]
+        var cells = [];
+        dataAttributes.forEach(function(attrX, col){
+            dataAttributes.forEach(function(attrY,row){
+                cells.push(new SplomCell(attrX, attrY, col, row));
+            });
+        });
+        console.log(cells);
 
-
+        var cellEnter = chartG.selectAll('.cell')
+            .data(cells)
+            .enter()
+            .append('g')
+            .attr('class', 'cell')
+            .attr("transform", function(d) {
+                // Start from the far right for columns to get a better looking chart
+                var tx = (N - d.col - 1) * cellWidth + cellPadding / 2;
+                var ty = d.row * cellHeight + cellPadding / 2;
+                return "translate("+[tx, ty]+")";
+            });
+        
+        cellEnter.each(function(cell){
+            cell.init(this);
+            cell.update(this, dataset);
+        });        
 
     });
 
