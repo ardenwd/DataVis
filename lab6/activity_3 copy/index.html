@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 6 - Cars</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div id="main">
+        <svg width="900" height="500" style="border: 1px solid #777;">
+        </svg>
+		<div class = "dropdowns">
+			<b id = "xSelect">x-axis:</b>
+			<select id="xSelector" onchange="onCategoryChanged()">
+				<option value="cylinders" index = 1>cylinders</option>
+				<option value="economy (mpg)" index = '2'>economy (mpg)</option>
+				<option value="displacement (cc)" index = '3'>displacement (cc)</option>
+				<option value="power (hp)" index = '4'>power (hp)</option>
+				<option value="weight (lb)" index = '5'>weight (lb)</option>
+				<option value="0-60 mph (s)" index = '6'>0-60 mph (s)</option>
+				<option value="year" index = '7'>year</option>
+			</select>  
+			<b id = "ySelect">y-axis:</b>
+			<select id="ySelector" onchange="onCategoryChanged()">
+				<option value="cylinders" index = '1'>cylinders</option>
+				<option value="economy (mpg)" index = '2'>economy (mpg)</option>
+				<option value="displacement (cc)" index = '3'>displacement (cc)</option>
+				<option value="power (hp)" index = '4'>power (hp)</option>
+				<option value="weight (lb)" index = '5'>weight (lb)</option>
+				<option value="0-60 mph (s)" index = '6'>0-60 mph (s)</option>
+				<option value="year" index = '7'>year</option>
+			</select>  
+		</div>
+    </div>
+</body>
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<script src="./d3-tip.js"></script>
+<script src="./main.js"></script>
+</html>

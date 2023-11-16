@@ -81,7 +81,8 @@ d3.csv('stock_prices.csv').then(function(dataset) {
                 count++;
                 return 'translate('+[tx, ty]+')';
             });
-              var xGrid = d3.axisTop(xScale)
+              
+        var xGrid = d3.axisTop(xScale)
             .tickSize(-trellisHeight, 0, 0)
             .tickFormat('');
          //   xGrid;

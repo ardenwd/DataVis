@@ -1,4 +1,17 @@
+var toolTip = d3.tip()
+.attr("class", "d3-tip")
+.offset([-12, 0])
+.html(function(event, d) {
+    // Inject html, when creating your html I recommend editing the html within your index.html first
+    return "<h5>"+d['name']+"</h5><table><thead><tr><td>Year</td><td>Displacement (cc)</td><td>Weight (lb)</td></tr></thead>"
+         + "<tbody><tr><td>"+d['year']+"</td><td>"+d['displacement (cc)']+"</td><td>"+d['weight (lb)']+"</td></tr></tbody>"
+         + "<thead><tr><td>0-60 mph (s)</td><td>Economy (mpg)</td><td>Cylinders</td><td>Power (hp)</td></tr></thead>"
+         + "<tbody><tr><td>"+d['0-60 mph (s)']+"</td><td>"+d['economy (mpg)']+"</td><td>"+d['cylinders']+"</td><td>"+d['power (hp)']+"</td></tr></tbody></table>"
+});
+
 var svg = d3.select('svg');
+
+svg.call(toolTip);
 
 // Get layout parameters
 var svgWidth = +svg.attr('width');
@@ -124,6 +137,9 @@ SplomCell.prototype.update = function(g, data) {
         .style("fill", function(d) { return colorScale(d.cylinders); })
         .attr('r', 4);
 
+    dotsEnter.on('mouseover', toolTip.show)
+        .on('mouseout', toolTip.hide);
+
     dots.merge(dotsEnter).attr('cx', function(d){
             return xScale(d[_this.x]);
         })
@@ -163,6 +179,7 @@ d3.csv('cars.csv', dataPreprocessor).then(function(dataset) {
                     .attr('class', 'axis-label')
                     .attr('transform', 'translate('+[cellWidth / 2, -20]+')');
             });
+            
         chartG.selectAll('.y.axis')
             .data(dataAttributes)
             .enter()
@@ -205,15 +222,16 @@ d3.csv('cars.csv', dataPreprocessor).then(function(dataset) {
                 return "translate("+[tx, ty]+")";
             });
         
+      
+        
+        cellEnter.append('g')
+            .attr('class', 'brush')
+            .call(brush);
+
         cellEnter.each(function(cell){
             cell.init(this);
             cell.update(this, dataset);
         });  
-        
-        cellEnter.append('g')
-	.attr('class', 'brush')
-	.call(brush);
-
     });
 
 // ********* Your event listener functions go here *********//

@@ -148,7 +148,7 @@ function updateChart(filterKey) {
     });
     
     bar.exit().attr('class','inactive').remove();
-
+    
 }
 
 function updateCutoff(cutoff) {
