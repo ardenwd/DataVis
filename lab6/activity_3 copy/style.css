@@ -113,3 +113,8 @@ label {
 #main {
     margin: 20px;
 }
+
+rect{
+  stroke: none;
+  fill-opacity: 0.8;
+}

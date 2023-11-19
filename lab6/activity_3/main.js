@@ -208,8 +208,9 @@ d3.csv('cars.csv', dataPreprocessor).then(function(dataset) {
                 cells.push(new SplomCell(attrX, attrY, col, row));
             });
         });
+            
         console.log(cells);
-
+        
         var cellEnter = chartG.selectAll('.cell')
             .data(cells)
             .enter()
