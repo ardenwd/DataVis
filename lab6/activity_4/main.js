@@ -16,14 +16,14 @@ svg.call(toolTip);
 function onCategoryChanged() {
     var select = d3.select('#xSelector').node();
     // Get current value of select element
-    var x = select.options[select.selectedIndex].value;
+    xCat = select.options[select.selectedIndex].value;
     var xIndex = select.options[select.selectedIndex].index;
    // console.log(xIndex);
     select = d3.select('#ySelector').node();
-    var y = select.options[select.selectedIndex].value;
+    yCat = select.options[select.selectedIndex].value;
     var yIndex = select.options[select.selectedIndex].index;
     // Update chart with the selected category of letters
-    updateChart(x,y, xIndex, yIndex, cars);
+    updateChart(xCat,yCat, xIndex, yIndex, cars);
     //console.log(x);
 }
 
@@ -31,6 +31,8 @@ function onCategoryChanged() {
 // Get layout parameters
 var svgWidth = +svg.attr('width');
 var svgHeight = +svg.attr('height');
+var xCat = 'cylinders';
+var yCat = 'economy (mpg)';
 
 // Map for referencing min/max per each attribute
 var extentByAttribute = {};
@@ -105,8 +107,8 @@ function brushstart(event, chart) {
         brush.move(d3.select(brushChart), null);
 
         // Update the global scales for the subsequent brushmove events
-        xScale.domain(extentByAttribute[chartAX]);
-        yScale.domain(extentByAttribute[chartAY]);
+        xScale.domain(extentByAttribute[xCat]);
+        yScale.domain(extentByAttribute[yCat]);
 
         // Save the state of this g element as having an active brush
         brushChart = this;
@@ -114,7 +116,16 @@ function brushstart(event, chart) {
 } 
 
 function brushmove(event, chart) {
+
     // cell is the SplomCell object
+    if (chart == chartA){
+        x = chartAX;
+        y = chartAY;
+    }
+    else {
+        x = chartBX;
+        y = chartBY;
+    }
 
     // Get the extent or bounding box of the brush event, this is a 2x2 array
     var e = event.selection;
@@ -124,9 +135,17 @@ function brushmove(event, chart) {
         // lies outside of the brush-filter applied for this SplomCells x and y attributes
         svg.selectAll(".dot")
             .classed("hidden", function(d){
-                return e[0][0] > xScale(d[chartAX]) || xScale(d[chartAX]) > e[1][0]
-                    || e[0][1] > yScale(d[chartAY]) || yScale(d[chartAY]) > e[1][1];
-            })
+                console.log("e is " + (e[0][0]));
+                return e[0][0] > (xScale(d[xCat]) + 50) || (xScale(d[xCat]) + 50) > e[1][0]
+                    || e[0][1] > yScale(d[yCat]) || yScale(d[yCat]) > e[1][1];
+            });
+
+        svg.selectAll(".bar")
+            .classed("hidden", function(d){
+                console.log("e is " + (e[0][0]));
+                return e[0][0] > (xScale(d[xCat]) + 50) || (xScale(d[xCat]) + 50) > e[1][0]
+                    || e[0][1] > yScale(d[yCat]) || yScale(d[yCat]) > e[1][1];
+            });
     }
 }
 
@@ -153,7 +172,7 @@ d3.csv('cars.csv', dataPreprocessor).then(function(dataset) {
             return d[attribute];
         });
     });
-    
+
     updateChart('cylinders','economy (mpg)', 1, 2,cars);
 
 });
@@ -170,6 +189,10 @@ function updateChart(xCat,yCat, xIndex, yIndex, data) {
     console.log(barData);
 
     chartA.append('g')
+        .call(brush)
+        .attr('class', 'brush');
+
+    chartB.append('g')
         .call(brush)
         .attr('class', 'brush');
 
