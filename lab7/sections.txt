@@ -1,0 +1,26 @@
+title-text
+    No graphics
+
+world-incidents
+    bunch of dots
+
+fatal-incidents
+    bunch of red dots
+
+non-fatal-incidents 
+    orange and red dots
+
+mid-text
+    no graphics
+
+by-country
+    bar chart, countries x num accidents
+
+by-carrier
+    bar chart, carrier x num accidents
+
+by-manufactuer
+    bar chart, Manufactuer x num accidents
+
+by-flight-phase
+    bar chart, fight phase x num accidents

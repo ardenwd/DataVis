@@ -1,3 +1,13 @@
-> This lab will have you put all this design and implementation skill together and create a vis from scratch. There are 4 different options for you to pick from. Each of them has their own visual style, user interactions, datasets, and implementation challenges. 
+## D3 Scrollytelling Demo
 
-See the Wiki for the options and descriptions for lab7 (tab above). 
+Example code of how you might make a basic scrollytelling site using [D3](https://d3js.org/).
+
+[Demo Here](http://vallandingham.me/scroll_demo/).
+
+This code has been **updated to use D3v4**.
+
+If you are looking for the old D3v3 code, check out the [old-d3v3 branch](https://github.com/vlandham/scroll_demo/tree/old-d3v3) of this repository.
+
+Originally, this code was part of a talk given at [OpenVis Conf](http://openvisconf.com/) about scrollytelling.
+
+[Check out the talk and additional materials!](http://vallandingham.me/think_you_can_scroll.html)
