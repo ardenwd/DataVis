@@ -87,7 +87,7 @@ function updateBars(house) {
         return (h.power_ranking > 0);
     }); 
     }
-
+    console.log(data);
     data.sort(function (a,b){
         return b.probability_of_survival - a.probability_of_survival;
     });
