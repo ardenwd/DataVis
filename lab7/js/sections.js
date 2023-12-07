@@ -7,10 +7,13 @@
   var countryNames = [];
   var carrierCounts;
   var carrierMax;
+  var carrierNames = ['Delta', 'American', 'United', 'Southwest', 'Continental','US Airways', 'Northwest', 'FedEx','America West', 'Alaska' ];
   var makeCounts;
   var makeMax;
+  var makeNames = [];
   var phaseCounts;
   var phaseMax;
+  var phaseNames = [];
 
 /**
  * scrollVis - encapsulates
@@ -21,7 +24,8 @@
 var scrollVis = function (data) {
   // constants to define the size
   // and margins of the vis area.
-  var width = 600;
+  var width = 700;
+  var dotsWidth = 480;
   var height = 520;
   var margin = { top: 0, left: 20, bottom: 40, right: 10 };
 
@@ -36,8 +40,7 @@ var scrollVis = function (data) {
   // Sizing for the grid visualization
   var squareSize = 6;
   var squarePad = 2;
-  var numPerRow = width / (squareSize + squarePad);
-
+  var numPerRow = dotsWidth / (squareSize + squarePad);
   // main svg used for visualization
   var svg = null;
 
@@ -55,12 +58,7 @@ var scrollVis = function (data) {
     .range([0,width- 100],0.1,0.1);
 
   var yScale = d3.scaleLinear()
-    .range([height, 0], 0.1, 0,1);
-
-  var yGridScale = d3.scaleBand()
-    .paddingInner(0.08)
-    .domain([0, 1, 2])
-    .range([0, height - 50], 0.1, 0.1);
+    .range([height, 40], 0.2, 0.2);
 
   // The bar chart display is horizontal
   // so we can use an ordinal scale
@@ -72,8 +70,8 @@ var scrollVis = function (data) {
   //   .range([0, height - 50], 0.1, 0.1);
 
   // Color is determined just by the index of the bars
-  var barColors = { 0: '#008080', 1: '#399785', 2: '#5AAF8C',  3: '#008080', 4: '#399785', 5: '#5AAF8C',  6: '#008080', 7: '#399785', 8: '#5AAF8C',  9: '#008080', 10: '#399785', 11: '#5AAF8C'};
-
+  var barColors = { 0: '#fe9ca5', 1: '#9c745e', 2: '#b9b0ab',  3: '#4f79a7', 4: '#f28e3d', 5: '#e15659',  6: '#a2ceca', 7: '#58a14f', 8: '#edc94c',  9: '#ad799f'};
+ 
   // The histogram display shows the
   // first 30 minutes of data
   // so the range goes from 0 to 30
@@ -96,10 +94,6 @@ var scrollVis = function (data) {
   // through the section into a
   // color value.
   // @v4 using new scale name
-  var coughColorScale = d3.scaleLinear()
-    .domain([0, 1.0])
-    .range(['#008080', 'red']);
-
   // You could probably get fancy and
   // use just one axis, modifying the
   // scale, but I will use two separate
@@ -178,19 +172,53 @@ var scrollVis = function (data) {
         countryCounts.forEach(function(d,i){countryNames[i] =d[0];});
 
         //fix this to filter other namess
+        data.forEach(function(d,i){
+          d.Air_Carrier = d.Air_Carrier.replace('"','').toLowerCase();
+           // d.Air_Carrier[0] === '"'
+          for(let j = 0; j<carrierNames.length; j++){
+            if(d.Air_Carrier.indexOf(carrierNames[j].toLowerCase()) !== -1){
+              d.Air_Carrier = carrierNames[j];
+            }  
+          }
+      
+        });
+        
         carrierCounts = d3.rollups(data, v => v.length, d => d.Air_Carrier);
         carrierCounts.sort(function(a,b) { return b[1] - a[1];});
-        carrierCounts = carrierCounts.filter(function(d,i){ ; return (i < 5);});
-        carrierMax = d3.greatest(carrierCounts.values());
-
+        carrierCounts = carrierCounts.filter(function(d,i){ ; return (i!=0 && i<10);});
+      
+        carrierCounts.forEach(function(d,i){carrierNames[i] =d[1];})
+        carrierMax = d3.greatest(carrierNames);
+        
+        carrierCounts.forEach(function(d,i){carrierNames[i] =d[0];})
+        
         //Make: all 5
         makeCounts = d3.rollups(data, v => v.length, d => d.Make); 
-        makeMax = d3.greatest(makeCounts.values());
+
+        makeCounts.sort(function(a,b) { return b[1] - a[1];});
+        makeCounts = makeCounts.filter(function(d,i){ ; return (i < 5);});
+
+        makeCounts.forEach(function(d,i){makeNames[i] =d[1];})
+        makeMax = d3.greatest(makeNames);
+        
+        makeCounts.forEach(function(d,i){makeNames[i] =d[0];})
+        
+
 
         //Phase: everything but unlabeled
         phaseCounts = d3.rollups(data, v => v.length, d => d.Broad_Phase_of_Flight); 
         phaseCounts = phaseCounts.filter(function(d,i){  return (d[0]!= '');});
-        phaseMax = d3.greatest(phaseCounts.values());
+       
+         //list of just values to get the max
+        phaseCounts.forEach(function(d,i){phaseNames[i] =d[1];});
+        phaseMax = d3.greatest(phaseNames);
+
+        //list of just names
+        phaseCounts.forEach(function(d,i){phaseNames[i] =d[0];});
+        console.log("names are " + phaseNames);
+        console.log("max is "+ phaseMax);
+
+      
       
       //  groupByWord(fillerWords);
       // set the bar scale's domain
@@ -264,119 +292,51 @@ var scrollVis = function (data) {
     g.selectAll('.count-title')
       .attr('opacity', 0);
 
-    // // square grid
-    // // @v4 Using .merge here to ensure
-    // // new and old data have same attrs applied
-    // var squares = g.selectAll('.square').data(wordData, function (d) { return d.word; });
-    // var squaresE = squares.enter()
-    //   .append('rect')
-    //   .classed('square', true);
-    // squares = squares.merge(squaresE)
-    //   .attr('width', squareSize)
-    //   .attr('height', squareSize)
-    //   .attr('fill', '#fff')
-    //   .classed('fill-square', function (d) { return d.filler; })
-    //   .attr('x', function (d) { return d.x;})
-    //   .attr('y', function (d) { return d.y;})
-    //   .attr('opacity', 0);
-
-
 
     // square grid
     // @v4 Using .merge here to ensure
     // new and old data have same attrs applied
     var squares = g.selectAll('.square').data(flightData, function (d) { return d.word; });
     var squaresE = squares.enter()
-      .append('rect')
+      .append('circle')
       .classed('square', true);
     squares = squares.merge(squaresE)
-      .attr('width', squareSize)
-      .attr('height', squareSize)
-      .attr('fill', '#fff')
+    .attr('r', 3.5)
+      // .attr('width', squareSize)
+      // .attr('height', squareSize)
+      .attr('fill', '#eee')
       .classed('fill-square', function (d) { return d.fatal; })
       .classed('red-square', function (d) {return d.fatal;})
       .classed('orange-square', function (d) {return d.non_fatal;})
-      .attr('x', function (d) { return d.x;})
-      .attr('y', function (d) { return d.y;})
+      .attr('cx', function (d) { return d.x;})
+      .attr('cy', function (d) { return d.y;})
       .attr('opacity', 0);
 
 
-    // barchart
-    // @v4 Using .merge here to ensure
-    // new and old data have same attrs applied
-    
-
-    // histogram
-    // @v4 Using .merge here to ensure
-    // // new and old data have same attrs applied
-    // var hist = g.selectAll('.hist').data(histData);
-    // var histE = hist.enter().append('rect')
-    //   .attr('class', 'hist');
-    // hist = hist.merge(histE).attr('x', function (d) { return xHistScale(d.x0); })
-    //   .attr('y', height)
-    //   .attr('height', 0)
-    //   .attr('width', xHistScale(histData[0].x1) - xHistScale(histData[0].x0) - 1)
-    //   .attr('fill', barColors[0])
-    //   .attr('opacity', 0);
-
-    // // cough title
-    // g.append('text')
-    //   .attr('class', 'sub-title cough cough-title')
-    //   .attr('x', width / 2)
-    //   .attr('y', 60)
-    //   .text('cough')
-    //   .attr('opacity', 0);
-
-    // // arrowhead from
-    // // http://logogin.blogspot.com/2013/02/d3js-arrowhead-markers.html
-    // svg.append('defs').append('marker')
-    //   .attr('id', 'arrowhead')
-    //   .attr('refY', 2)
-    //   .attr('markerWidth', 6)
-    //   .attr('markerHeight', 4)
-    //   .attr('orient', 'auto')
-    //   .append('path')
-    //   .attr('d', 'M 0,0 V 4 L6,2 Z');
-
-    // g.append('path')
-    //   .attr('class', 'cough cough-arrow')
-    //   .attr('marker-end', 'url(#arrowhead)')
-    //   .attr('d', function () {
-    //     var line = 'M ' + ((width / 2) - 10) + ' ' + 80;
-    //     line += ' l 0 ' + 230;
-    //     return line;
-    //   })
-    //   .attr('opacity', 0);
   };
 
   function updateBarData(data){
+    var toRemove = svg.selectAll('.bar');
+  
+    toRemove.remove();
+
     var bars = g.selectAll('.bar').data(data);
     var barsE = bars.enter()
       .append('rect')
       .attr('class', 'bar');
     bars = bars.merge(barsE)
-      .attr('x', function(d,i) { return xScale(d[0]) + 50;})
+      .attr('x', function(d,i) {console.log(d[0]); console.log(xScale(d[0])); return xScale(d[0]) + 50;})
       .attr('y', function (d, i) { 
         return height;
       })
       .attr('fill', function (d, i) { return barColors[i]; })
       .attr('width', xScale.bandwidth())
-      .attr('height', 0)
-      .attr('opacity', 0);
-
-    var barText = g.selectAll('.bar-text').data(data);
-    barText.enter()
-      .append('text')
-      .attr('class', 'bar-text')
-      .text(function (d) { return d[0] + '…'; })
-      .attr('dx', 15)
-      .attr('x', function(d,i) { return xScale(d[0]) + 50;})
-      .attr('y', function (d, i) { return height;})
-      .attr('dy', xScale.bandwidth() / 1.2)
-      .style('font-size', '4px')
-      .attr('fill', 'black')
-      .attr('opacity', 0);
+      
+      //.attr('height', 0)
+     // .attr('opacity', 0);
+      console.log("bandwidth is " + xScale.bandwidth());
   }
+  
 
   /**
    * setupSections - each section is activated
@@ -404,10 +364,9 @@ var scrollVis = function (data) {
     // Most sections do not need to be updated
     // for all scrolling and so are set to
     // no-op functions.
-    for (var i = 0; i < 9; i++) {
+     for (var i = 0; i < 9; i++) {
       updateFunctions[i] = function () {};
     }
-    updateFunctions[7] = updateCough;
   };
 
   /**
@@ -434,16 +393,13 @@ function titleText(){
       .transition()
       .duration(0)
       .attr('opacity', 0)
-      .attr('fill', '#ddd');
+      .attr('fill', '#7d7d7d');
 
     g.selectAll('.opening-title')
       .transition()
       .duration(600)
       .attr('opacity', 1.0);
 
-
-    //  g.selectAll('.opening-title')
-    //   .attr('opacity', 1.0);
 }
 
 /** shows: dot graph
@@ -463,7 +419,7 @@ function worldIncidents(){
         return 5 * d.row;
       })
       .attr('opacity', 1.0)
-      .attr('fill', '#ddd');
+      .attr('fill', '#7d7d7d');
       
 }
 
@@ -478,28 +434,13 @@ function fatalIncidents(){
       .transition()
       .duration(0)
       .attr('opacity', 1.0)
-      .attr('fill', '#ddd');
-
-    // use named transition to ensure
-    // move happens even if other
-    // transitions are interrupted.
-    // g.selectAll('.red-square')
-    //   .transition('move-fills')
-    //   .duration(800)
-    //   .attr('x', function (d) {
-    //     return d.x;
-    //   })
-    //   .attr('y', function (d) {
-    //     return d.y;
-    //   });
+      .attr('fill', '#7d7d7d');
 
     g.selectAll('.red-square')
       .transition()
       .duration(800)
       .attr('opacity', 1.0)
       .attr('fill', function (d) { return 'red';
-        
-        // d.fatal ? '#008080' : '#ddd'; 
       });
 }
 
@@ -513,7 +454,7 @@ function nonFatalIncidents (){
         .transition()
         .duration(500)
         .attr('opacity', 1.0)
-        .attr('fill', '#ddd');
+        .attr('fill', '#7d7d7d');
 
   g.selectAll('.red-square')
       .transition()
@@ -521,20 +462,7 @@ function nonFatalIncidents (){
       .attr('opacity', 1.0)
       .attr('fill', function (d) { return 'red';
         
-        // d.fatal ? '#008080' : '#ddd'; 
       });
-    // use named transition to ensure
-    // move happens even if other
-    // transitions are interrupted.
-    // g.selectAll('.orange-square')
-    //   .transition('move-fills')
-    //   .duration(800)
-    //   .attr('x', function (d) {
-    //     return d.x;
-    //   })
-    //   .attr('y', function (d) {
-    //     return d.y;
-    //   });
 
     g.selectAll('.orange-square')
       .transition()
@@ -542,7 +470,7 @@ function nonFatalIncidents (){
       .attr('opacity', 1.0)
       .attr('fill', function (d) { return 'orange';
         
-        // d.fatal ? '#008080' : '#ddd'; 
+        // d.fatal ? '#008080' : '#7d7d7d'; 
       });
 }
 
@@ -556,7 +484,7 @@ function midText(){
       .transition()
       .duration(800)
       .attr('opacity', 0)
-      .attr('fill', '#ddd');
+      .attr('fill', '#7d7d7d');
 
       hideAxis();
 
@@ -571,9 +499,13 @@ function midText(){
     hides: bar by carrier
   */
 function byCountry(){
+      g.selectAll('.bar')
+      .attr('opacity',1.0)
+      .transition()
+      .delay(1000);
     // bar chart, countries x num accidents
       hideAxis();
-      yScale.domain([0,countryMax]);
+      yScale.domain([0,countryMax ]);
       //however many countries there are  
       xScale.domain(countryNames);
    
@@ -591,13 +523,6 @@ function byCountry(){
         return yScale(d[1]);
       });
 
-    g.selectAll('.bar-text')
-      .text(function(d){return d[0];})
-      .transition()
-      .duration(600)
-      .delay(1200)
-      .attr('opacity', 0);
-
 }
 
 /** shows: bar by carrier
@@ -606,10 +531,27 @@ function byCountry(){
   */
 function byCarrier(){
     // bar chart, carrier x num accidents
+
+  
     hideAxis();
-      yScale.domain([0,carrierMax]);//however many countries there are
-      xScale.domain([0,carrierCounts.length]);
+      yScale.domain([0,carrierMax ]);
+      xScale.domain(carrierNames);
       showAxisY(yAxis);
+      showAxisX(xAxis);
+
+     updateBarData(carrierCounts);
+         
+    g.selectAll('.bar')
+      .attr('opacity',1.0)
+      .transition()
+      .delay(function (d, i) { return 30 * (i + 1);})
+      .duration(600)
+      .attr('height', function(d,i){return ((height - yScale(d[1]))); } )
+      .attr('y', function (d, i) { 
+        return yScale(d[1]);
+      });
+
+      //get rid of the last bar
 }
 
 /** shows: bar by manufacturer
@@ -618,10 +560,22 @@ function byCarrier(){
   */
 function byManufacturer(){
     // bar chart, Manufactuer x num accidents
-    hideAxis();
-      yScale.domain([0,makeMax]);//however many countries there are
-      xScale.domain([0,makeCounts.length]);
+      hideAxis();
+      yScale.domain([0,makeMax ]);//however many countries there are
+      xScale.domain(makeNames);
       showAxisY(yAxis);
+      showAxisX(xAxis);
+      updateBarData(makeCounts);
+    
+    g.selectAll('.bar')
+      .attr('opacity',1.0)
+      .transition()
+      .delay(function (d, i) { return 30 * (i + 1);})
+      .duration(600)
+      .attr('height', function(d,i){return ((height - yScale(d[1]))); } )
+      .attr('y', function (d, i) { 
+        return yScale(d[1]);
+      });
 }
 
 /** shows: bar by flight phase
@@ -630,9 +584,21 @@ function byManufacturer(){
 function byFlightPhase(){
     // bar chart, fight phase x num accidents
     hideAxis();
-      yScale.domain([0,phaseMax]);//however many countries there are
-      xScale.domain([0,phaseCounts.length]);
+      yScale.domain([0,phaseMax ]);//however many countries there are
+      xScale.domain(phaseNames);
       showAxisY(yAxis);
+      showAxisX(xAxis);
+      updateBarData(phaseCounts);
+    
+    g.selectAll('.bar')
+      .attr('opacity',1.0)
+      .transition()
+      .delay(function (d, i) { return 30 * (i + 1);})
+      .duration(600)
+      .attr('height', function(d,i){return ((height - yScale(d[1]))); } )
+      .attr('y', function (d, i) { 
+        return yScale(d[1]);
+      });
 }
 
 
@@ -702,7 +668,7 @@ function byFlightPhase(){
         return 5 * d.row;
       })
       .attr('opacity', 1.0)
-      .attr('fill', '#ddd');
+      .attr('fill', '#7d7d7d');
   }
 
   /**
@@ -730,7 +696,7 @@ function byFlightPhase(){
       .transition()
       .duration(0)
       .attr('opacity', 1.0)
-      .attr('fill', '#ddd');
+      .attr('fill', '#7d7d7d');
 
     // use named transition to ensure
     // move happens even if other
@@ -751,145 +717,12 @@ function byFlightPhase(){
       .attr('opacity', 1.0)
       .attr('fill', function (d) {  return 'red';
         
-        // d.fatal ? '#008080' : '#ddd'; 
+        // d.fatal ? '#008080' : '#7d7d7d'; 
       });
   }
 
-  /**
-   * showBar - barchart
-   *
-   * hides: square grid
-   * hides: histogram
-   * shows: barchart
-   *
-   */
-  function showBar() {
-    // ensure bar axis is set
-    showAxis(yAxis);
+ 
 
-    g.selectAll('.square')
-      .transition()
-      .duration(800)
-      .attr('opacity', 0);
-
-    g.selectAll('.red-square')
-      .transition()
-      .duration(800)
-      .attr('x', 0)
-      .attr('y', function (d, i) {
-        return yGridScale(i % 3) + yGridScale.bandwidth() / 2;
-      })
-      .transition()
-      .duration(0)
-      .attr('opacity', 0);
-
-    g.selectAll('.hist')
-      .transition()
-      .duration(600)
-      .attr('height', function () { return 0; })
-      .attr('y', function () { return height; })
-      .style('opacity', 0);
-
-    g.selectAll('.bar')
-      .transition()
-      .delay(function (d, i) { return 300 * (i + 1);})
-      .duration(600)
-      .attr('width', function (d) { return xScale(d.value); });
-
-    g.selectAll('.bar-text')
-      .transition()
-      .duration(600)
-      .delay(1200)
-      .attr('opacity', 1);
-  }
-
-  /**
-   * showHistPart - shows the first part
-   *  of the histogram of filler words
-   *
-   * hides: barchart
-   * hides: last half of histogram
-   * shows: first half of histogram
-   *
-   */
-  function showHistPart() {
-    // switch the axis to histogram one
-    showAxis(xAxisHist);
-
-    g.selectAll('.bar-text')
-      .transition()
-      .duration(0)
-      .attr('opacity', 0);
-
-    g.selectAll('.bar')
-      .transition()
-      .duration(600)
-      .attr('width', 0);
-
-    // here we only show a bar if
-    // it is before the 15 minute mark
-    g.selectAll('.hist')
-      .transition()
-      .duration(600)
-      .attr('y', function (d) { return (d.x0 < 15) ? yHistScale(d.length) : height; })
-      .attr('height', function (d) { return (d.x0 < 15) ? height - yHistScale(d.length) : 0; })
-      .style('opacity', function (d) { return (d.x0 < 15) ? 1.0 : 1e-6; });
-  }
-
-  /**
-   * showHistAll - show all histogram
-   *
-   * hides: cough title and color
-   * (previous step is also part of the
-   *  histogram, so we don't have to hide
-   *  that)
-   * shows: all histogram bars
-   *
-   */
-  function showHistAll() {
-    // ensure the axis to histogram one
-    showAxis(xAxisHist);
-
-    g.selectAll('.cough')
-      .transition()
-      .duration(0)
-      .attr('opacity', 0);
-
-    // named transition to ensure
-    // color change is not clobbered
-    g.selectAll('.hist')
-      .transition('color')
-      .duration(500)
-      .style('fill', '#008080');
-
-    g.selectAll('.hist')
-      .transition()
-      .duration(1200)
-      .attr('y', function (d) { return yHistScale(d.length); })
-      .attr('height', function (d) { return height - yHistScale(d.length); })
-      .style('opacity', 1.0);
-  }
-
-  /**
-   * showCough
-   *
-   * hides: nothing
-   * (previous and next sections are histograms
-   *  so we don't have to hide much here)
-   * shows: histogram
-   *
-   */
-  function showCough() {
-    // ensure the axis to histogram one
-    showAxis(xAxisHist);
-
-    g.selectAll('.hist')
-      .transition()
-      .duration(600)
-      .attr('y', function (d) { return yHistScale(d.length); })
-      .attr('height', function (d) { return height - yHistScale(d.length); })
-      .style('opacity', 1.0);
-  }
 
   /**
    * showAxis - helper function to
@@ -926,78 +759,7 @@ function byFlightPhase(){
       .style('opacity', 0);
   }
 
-  /**
-   * UPDATE FUNCTIONS
-   *
-   * These will be called within a section
-   * as the user scrolls through it.
-   *
-   * We use an immediate transition to
-   * update visual elements based on
-   * how far the user has scrolled
-   *
-   */
-
-  /**
-   * updateCough - increase/decrease
-   * cough text and color
-   *
-   * @param progress - 0.0 - 1.0 -
-   *  how far user has scrolled in section
-   */
-  function updateCough(progress) {
-    g.selectAll('.cough')
-      .transition()
-      .duration(0)
-      .attr('opacity', progress);
-
-    g.selectAll('.hist')
-      .transition('cough')
-      .duration(0)
-      .style('fill', function (d) {
-        return (d.x0 >= 14) ? coughColorScale(progress) : '#008080';
-      });
-  }
-
-  /**
-   * DATA FUNCTIONS
-   *
-   * Used to coerce the data into the
-   * formats we need to visualize
-   *
-   */
-
-
-  //get flights
-  // function getFlights(data) {
-  //   return data.map(function(d,i) {
-  //    d.fatal = (d.Total_Fatal_Injuries > 0) ? true : false;
-  //    d.non_fatal = ((d.Total_Serious_Injuries > 0) && (!(d.fatal)));
-  //     return d;
-  //   });
-  // }  
-
-  // function getFlights(data) {
-  //   return d3.map(data, function(d,i) {
-  //    d.fatal = (d.Total_Fatal_Injuries > 0) ? true : false;
-  //    d.non_fatal = ((d.Total_Serious_Injuries > 0) && (!(d.fatal)));
-  //     return d;
-  //   });
-  // }  
-
-
-  //get fatal flights
-    function getFatalFlights(data) {
-      data.filter(function(d) { 
-        return d.fatal});
-    }
-
-    //  d3.rollup(data, v => v.length, d => d.Country);
-    // function getCountryData(data){
-    //   return 
-    // }
-
-
+ 
 
   /**
    * getWords - maps raw data to
@@ -1026,13 +788,14 @@ function byFlightPhase(){
       // stored here to make it easier
       // to keep track of.
       d.col = i % numPerRow;
-      d.x = d.col * (squareSize + squarePad);
+      d.x = d.col * (squareSize + squarePad) + 60;
       d.row = Math.floor(i / numPerRow);
-      d.y = d.row * (squareSize + squarePad);
+      d.y = d.row * (squareSize + squarePad) + 50;
 
       //attributes for type of incident
        d.fatal = (d.Total_Fatal_Injuries > 0) ? true : false;
-       d.non_fatal = ((d.Total_Serious_Injuries > 0) && (!(d.fatal)));
+      //  d.non_fatal = ((d.Total_Serious_Injuries > 0) && (!(d.fatal)));
+       d.non_fatal = (d.Injury_Severity.indexOf("Non-Fatal") !== -1);
 
   
 
@@ -1053,45 +816,7 @@ function byFlightPhase(){
   // }
 
 
-  /**
-   * getHistogram - use d3's histogram layout
-   * to generate histogram bins for our word data
-   *
-   * @param data - word data. we use filler words
-   *  from getFillerWords
-   */
-  function getHistogram(data) {
-    // only get words from the first 30 minutes
-    var thirtyMins = data.filter(function (d) { return d.min < 30; });
-    // bin data into 2 minutes chuncks
-    // from 0 - 31 minutes
-    // @v4 The d3.histogram() produces a significantly different
-    // data structure then the old d3.layout.histogram().
-    // Take a look at this block:
-    // https://bl.ocks.org/mbostock/3048450
-    // to inform how you use it. Its different!
-    return d3.histogram()
-      .thresholds(xHistScale.ticks(10))
-      .value(function (d) { return d.min; })(thirtyMins);
-  }
 
-
-
-  /**
-   * groupByWord - group words together
-   * using nest. Used to get counts for
-   * barcharts.
-   *
-   * @param words
-   */
-  // function groupByWord(words) {
-  //   return d3.nest()
-  //     .key(function (d) { return d.word; })
-  //     .rollup(function (v) { return v.length; })
-  //     .entries(words)
-  //     .sort(function (a, b) {return b.value - a.value;});
-  //         d3.rollup(data, v => v.length, d => d.Country);
-  // }
 
   /**
    * activate -
@@ -1188,7 +913,7 @@ function dataPreprocessor(row) {
       'Longitude': row['Longitude'],
       'Airport_Code': row['Airport_Code'],
       'Airport_Name': row['Airport_Name'],
-      'Injury_Severity': row['Airport_Severity'],
+      'Injury_Severity': row['Injury_Severity'],
       'Aircraft_Damage': row['Airport_Damage'],
       'Registration_Number': row['Registration_Number'],
       'Make': row['Make'],
