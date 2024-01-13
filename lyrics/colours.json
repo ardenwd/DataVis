@@ -1,0 +1,30 @@
+interface Props {
+    "properties": {
+      "steps": 15,
+      "hue": {
+        "start": 239,
+        "end": 61,
+        "curve": "linear"
+      },
+      "saturation": {
+        "start": 0.4,
+        "end": 0.5,
+        "rate": 1,
+        "curve": "easeInSine"
+      },
+      "brightness": {
+        "start": 0.91,
+        "end": 0.89,
+        "curve": "linear"
+      }
+    },
+    "options": {
+      "minorSteps": [
+        0,
+        1
+      ],
+      "name": "Charli-scale",
+      "provideInverted": false,
+      "rotation": "clockwise"
+    }
+}

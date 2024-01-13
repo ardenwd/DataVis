@@ -1,4 +1,3 @@
-
   var extentByAttribute = {};
   var dataAttributes = ['Country', 'Carrier', 'Make', 'Broad_Phase_of_Flight'];
 
@@ -70,7 +69,7 @@ var scrollVis = function (data) {
   //   .range([0, height - 50], 0.1, 0.1);
 
   // Color is determined just by the index of the bars
-  var barColors = { 0: '#fe9ca5', 1: '#9c745e', 2: '#b9b0ab',  3: '#4f79a7', 4: '#f28e3d', 5: '#e15659',  6: '#a2ceca', 7: '#58a14f', 8: '#edc94c',  9: '#ad799f'};
+  var barColors = { 0: '#fe9ca5', 1: '#9c745e', 2: '#b9b0ab',  3: '#4f79a7', 4: '#f28e3d', 5: '#e15659',  6: '#a2ceca', 7: '#58a14f', 8: '#edc94c',  9: '#ad799f', 10: '#fe9ca5', 11: '#9c745e'};
  
   // The histogram display shows the
   // first 30 minutes of data
@@ -325,7 +324,7 @@ var scrollVis = function (data) {
       .append('rect')
       .attr('class', 'bar');
     bars = bars.merge(barsE)
-      .attr('x', function(d,i) {console.log(d[0]); console.log(xScale(d[0])); return xScale(d[0]) + 50;})
+      .attr('x', function(d,i) {return xScale(d[0]) + 50;})
       .attr('y', function (d, i) { 
         return height;
       })

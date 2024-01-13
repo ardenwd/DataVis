@@ -1,0 +1,154 @@
+svg {
+    flex: 3;
+    /* border: 1px solid #777; */
+    
+}
+
+body{
+    background-color: #181818;
+    color:#f0f0f0;
+    font-family: garamond;
+    /* turn on for info graph vis */
+    /* display: flex; */
+    
+}
+
+.info {
+    flex: 1;
+    margin: 30px;
+    margin-left: 100px;
+    background-color: #4c4c4c;
+    padding: 35px;
+    opacity: 0.7;
+}
+
+.info-text{
+    font-size: 40px;
+}
+
+.tooltip{
+    /* flex: 1; */
+    width: fit-content;
+    height: fit-content;
+}
+
+.tooltip-text{
+    /* width: 60px; */
+    color:white;
+    line-height: 30%;
+    font-size: 15px;
+    
+}
+
+circle {
+    opacity: 1;
+    border: none;
+}
+.space{
+height: 170px;
+}
+
+.intro-wrapper{
+    height: 30rem;
+}
+
+.intro{
+    color: #f0f0f0;
+    font-family: garamond;
+    font-size: 40px;
+    
+}
+p {
+    color: #f0f0f0;
+    font-family: garamond;
+    font-size: 40px;
+    text-align: center;
+    
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto, auto, auto;
+}
+
+p.intro{
+    margin: 0px;
+}
+
+@keyframes its-key {
+0%{ padding-left:40px}
+100%{padding-left:0px;}
+}
+
+#its{
+    text-align: left;
+    font-size: 40px;
+    grid-column-start: 2;
+    grid-row-start: 1;
+    animation-name: its-key;
+    animation-duration: 1s;
+}
+
+@keyframes charli-key{
+    0%{ color:#f0f0f0}
+    80%{ color:#f0f0f0}
+    100%{ }
+
+}
+
+#charli{
+    color: #d39ad3;
+    font-size: 150px;
+    font-weight: 1000;
+    text-align: center;
+    grid-column-start: 2;
+    grid-row-start: 2;
+    margin: -30px 0px -30px 0px;
+    animation-name: charli-key;
+    animation-duration: 0.8s;
+}
+
+@keyframes baby-key{
+    0%{ rotate:0deg    }
+    66%{ rotate:0deg}
+    100%{  opacity: 1; rotate: -6deg}
+}
+
+#baby{
+    font-size: 60px;
+    grid-column-start: 2;
+    grid-row-start: 3;
+    text-align:right;
+    font-style: italic;
+    animation-name: baby-key;
+    animation-duration: 1.8s;
+    rotate: -6deg;
+}
+
+.break{
+    height: 200px;
+}
+
+#img-wrapper{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 70%;
+    border: 0 50px 0 50px;
+    margin: auto;
+
+}
+
+.img{
+    margin: 40px;
+    flex:1;
+    object-fit: cover;
+    width: 10%;
+    max-height: 100%;
+}
+
+#vis{
+    display: flex;
+    position: relative;
+}
