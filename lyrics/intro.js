@@ -17,3 +17,5 @@ var scene2 = new ScrollMagic.Scene({
 .addTo(controller); // Add Scene to ScrollMagic Controller
 
 scene2.on("enter", function(){console.log('hi');});
+
+//so when you get to the next section, change the vis 

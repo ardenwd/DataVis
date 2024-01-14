@@ -1,5 +1,7 @@
 var colors = d3.scaleOrdinal(["#1e6cc0", "#5a6cc4", "#806bc3", "#a069bf", "#bb68b8", "#d268af", "#e56aa3", "#f46f96",
                 "#ff7a85", "#ff8a73", "#ff9d63", "#ffb356", "#fdc950", "#ebdf56", "#d2f468"]);
+var songInfo = [];
+var wordTotals = [];
 
 var sideInfo = d3.select("#vis")
     .append("div")
@@ -55,8 +57,21 @@ var simulation = d3.forceSimulation(nodes)
         .force("charge", d3.forceManyBody().strength(-3.5));
 
 d3.csv('charli.csv', dataPreprocessor).then(function(dataset) {
-   circleVis(dataset);
+  var list;
+
+  //load the json file
+  d3.json('Lyrics_Charli.json').then(function(data){
+    // console.log(data.tracks);
+    list = data.tracks;
+    // console.log(list);
+    dataPreprocessorSongs(list,dataset);
+  });
+  circleVis(dataset);
+  //  titleVis(dataset);
+  //  console.log(dataset);
 });
+
+
 
 // Recall that when data is loaded into memory, numbers are loaded as Strings
 // This function converts numbers into Strings during data preprocessing
@@ -67,6 +82,46 @@ function dataPreprocessor(row) {
         Song: row.Song,
         radius: (((+row.Count)**0.7+2)*0.8)
     };
+}
+
+function dataPreprocessorSongs(data,lyrics){
+//make an array with the song name, list of artists, popularity
+//go through each song
+ console.log(data);
+var features = [];
+  data.forEach((d,i) => {
+    var featuresBySong = [];
+    //name: , features: , length: ,
+    songInfo.push({name: d.song.title,
+    features: d.song.featured_artists}
+    );
+
+    features=songInfo[i].features;
+    features.forEach((d) => featuresBySong.push(d.name));
+    songInfo[i].features=featuresBySong;
+  });
+
+  console.log(songInfo);
+
+  
+  // songInfo.forEach((d,i)=> {  
+  //   // console.log(d.features);
+  //     features = d.features;
+  //     console.log(features);
+  //     // if(features.length > 0)
+  
+  //   });
+
+  // console.log(features);
+  // songInfo.forEach((d)=>{console.log(d);});
+  // console.log(songInfo);
+  // console.log(features);
+  // var a = d3.rollups(data, d => d[0]);
+  // console.log(a);
+  // console.log(songInfo);
+  // songInfo = d3.rollups(data, v => v.song.primary_artist.name); 
+  //  console.log(data.song);
+
 }
 
 function circleVis(dataset){

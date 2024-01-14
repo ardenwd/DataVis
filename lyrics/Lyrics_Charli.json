@@ -120,19 +120,23 @@
     "title_with_featured": "Gone",
     "updated_by_human_at": 1688685979,
     "url": "https://genius.com/Charli-xcx-and-christine-and-the-queens-gone-lyrics",
-    "featured_artists": [],
+    "featured_artists": [
+        {"name": "Christine and the Queens"
+    }
+    ],
     "primary_artist": {
      "_type": "artist",
-     "api_path": "/artists/1890552",
-     "header_image_url": "https://images.genius.com/e0202a4d17c458998cbabeec9c85ce1b.640x457x1.jpg",
-     "id": 1890552,
-     "image_url": "https://images.genius.com/e0202a4d17c458998cbabeec9c85ce1b.640x457x1.jpg",
+     "api_path": "/artists/45349",
+     "header_image_url": "https://images.genius.com/8da9a354f6dd0dbcba1b624e65730742.150x150x1.jpg",
+     "id": 45349,
+     "image_url": "https://images.genius.com/be4e9b6974830837af31ba4ebf534833.776x776x1.png",
      "index_character": "c",
-     "is_meme_verified": false,
-     "is_verified": false,
-     "name": "Charli XCX & Christine and the Queens",
-     "slug": "Charli-xcx-and-christine-and-the-queens",
-     "url": "https://genius.com/artists/Charli-xcx-and-christine-and-the-queens"
+     "is_meme_verified": true,
+     "is_verified": true,
+     "name": "Charli XCX",
+     "slug": "Charli-xcx",
+     "url": "https://genius.com/artists/Charli-xcx",
+     "iq": 4280
     },
     "artist": "Charli XCX & Christine and the Queens",
     "lyrics": "I have to go, I'm so sorry, but it feels so cold in here\nI am just now realizing they don't care\nI try real hard, but I'm caught up by my insecurities\nPour me one more, watch the ice melt in my fist\n\nI feel so unstable, fucking hate these people\nHow they making me feel lately\nThey making me weird, baby, lately\nI feel so unstable, fucking hate these people\nHow they making me loathe\nThey making me loathe, yeah\n\nWhy do we keep when the water runs?\nWhy do we love if we're so mistaken?\nWhy do we leave when the chase is done?\nDon't search me in here, I'm already gone, baby\nWhy do we keep when the water runs?\nWhy do we love?\n\nI would lay down (Lay down)\nBut they staring, their eyes like two shining stones\nI see myself (Myself), and I look scared and confused\nWait, did they just talk? Why is it too loud? (Is it loud?)\nDo they wish to run through me? (Me)\nAm I a smoke? Am I the sun? And who decides? (Oh)\nYou might also like\nI feel so unstable, fucking hate these people\nHow they making me feel lately\nThey making me weird, baby, lately\nI feel so unstable, fucking hate these people\nHow they making me loathe\nThey making me loathe, oh, mmm (Yeah)\n\nWhy do we keep when the water runs?\nWhy do we love if we're so mistaken?\nWhy do we leave when the chase is done?\nDon't search me in here, I'm already gone, baby (Baby)\nWhy do we keep when the water runs?\nWhy do we love if we're so mistaken?\nWhy do we leave when the chase is done?\nDon't search me in here, I'm already gone, baby\n\n(Cruels endroits)\nWhy do we keep when the water runs?\nNe me cherche pas, je ne suis plus l\u00e0, baby\nWhy do we leave when the chase is done?\nNe me cherche pas, je ne suis plus l\u00e0 (Yeah, yeah, yeah, yeah)\nWhy do we? Ah\nKeep, keep, k-keep the water running\nKeep, k-keep, k-keep, k-keep the water run\nKeep, k-keep, k-keep the\nKeep, keep the, keep\nKeep\nWhy do we keep when the water runs?\nKeep, keep, keep\nWhy do we love if we're so mistaken?\nKeep, keep, keep\nWhy do we leave when the chase is done?\nKeep\nWhy do we keep when the water runs?\nKeep, keep, keep\nWhy do we love if we're so mistaken?\nKeep, keep, keep\nWhy do we leave when the chase is done?\nDon't search me in here, I'm already gone, baby"
@@ -244,19 +248,35 @@
     "title_with_featured": "1999",
     "updated_by_human_at": 1692744314,
     "url": "https://genius.com/Charli-xcx-and-troye-sivan-1999-lyrics",
-    "featured_artists": [],
+    "featured_artists": [
+     {
+      "_type": "artist",
+      "api_path": "/artists/161507",
+      "header_image_url": "https://images.genius.com/8ae533f2a2e14d40cea7ee9c9ae4e71c.636x744x1.jpg",
+      "id": 161507,
+      "image_url": "https://images.genius.com/a7d44a7ad8fbfaabc8726e4777abc421.400x400x1.jpg",
+      "index_character": "t",
+      "is_meme_verified": true,
+      "is_verified": true,
+      "name": "Troye Sivan",
+      "slug": "Troye-sivan",
+      "url": "https://genius.com/artists/Troye-sivan",
+      "iq": 22304
+     }
+    ],
     "primary_artist": {
      "_type": "artist",
-     "api_path": "/artists/1593173",
-     "header_image_url": "https://images.genius.com/48c1cb3243dace8978220ca548dcbe4b.1000x986x1.jpg",
-     "id": 1593173,
-     "image_url": "https://images.genius.com/48c1cb3243dace8978220ca548dcbe4b.1000x986x1.jpg",
+     "api_path": "/artists/45349",
+     "header_image_url": "https://images.genius.com/8da9a354f6dd0dbcba1b624e65730742.150x150x1.jpg",
+     "id": 45349,
+     "image_url": "https://images.genius.com/be4e9b6974830837af31ba4ebf534833.776x776x1.png",
      "index_character": "c",
-     "is_meme_verified": false,
-     "is_verified": false,
-     "name": "Charli XCX & Troye Sivan",
-     "slug": "Charli-xcx-and-troye-sivan",
-     "url": "https://genius.com/artists/Charli-xcx-and-troye-sivan"
+     "is_meme_verified": true,
+     "is_verified": true,
+     "name": "Charli XCX",
+     "slug": "Charli-xcx",
+     "url": "https://genius.com/artists/Charli-xcx",
+     "iq": 4280
     },
     "artist": "Charli XCX & Troye Sivan",
     "lyrics": "I just wanna go back, back to 1999\nTake a ride to my old neighborhood\nI just wanna go back, sing \"Hit me, baby, one more time\"\nWanna go back, wanna go\n\nYeah, I just wanna go back\nNike Airs, All That\nCD, old Mercedes\nDrive 'round listening to Shady like, oh\nNever under pressure, oh\nThose days, it was so much better, oh\nFeelin' cool in my youth, relaxin'\nNo money, no problem\nIt was easy back then\n\nOoh, wish that we could go back in time, uh\nGot memories\nOoh, maybe we could do it tonight\nTonight's the night\n\nI just wanna go back, back to 1999\nTake a ride to my old neighborhood\nI just wanna go back\nSing \"Hit me, baby, one more time\"\nWanna go back, wanna go\nYou might also like\nYeah, I remember back home\nBest friends, all night, no phone\nNo cares, I was dumb and so young\nMy room singing Michael Jackson (Hee, hee)\nNever under pressure, oh\nThose days it was so much better, oh\nFeelin' cool in my youth, I'm askin'\n\"Does anyone remember how we did it back then?\"\n\nOoh, wish that we could go back in time, uh\nGot memories\nOoh, maybe we could do it tonight\nTonight's the night\nAh, yeah\n\nI just wanna go back, back to 1999\nTake a ride to my old neighborhood\nI just wanna go back\nSing \"Hit me, baby, one more time\"\nWanna go back, wanna go\n\nBack to where we came from\nPlayin' air guitar on the roof\nIn the kitchen, up on the table\nLike we had a beautiful view\nI wanna go\nI just wanna go back, back to 1999\nAh, yeah\nBack to 1999\nI know those days are over, but a boy can fantasize\n'Bout JTT on MTV and when I close my e-e-eyes\nAnd I'm right there, right there\nAnd he's right there, right there\nAnd we're right there, right there\nAh, ah, ah, I wanna go back\n\nI just wanna go back (Yeah), back to 1999\nTake a ride to my old neighborhood\nI just wanna go back\nSing \"Hit me, baby, one more time\"\nWanna go back, wanna go\n\nBack to where we came from (Came from)\nPlayin' air guitar on the roof (Ah)\nIn the kitchen, up on the table\nLike we had a beautiful view\nI wanna go\nI just wanna go back, back to 1999 (Go back)\nGo back, yeah, yeah\nI just wanna go back, yeah, back to 1999\nTake me back to '99 (Yeah)"
