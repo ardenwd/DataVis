@@ -1,8 +1,12 @@
+var colorScale = ["#1e6cc0", "#5a6cc4", "#806bc3", "#a069bf", "#bb68b8", "#d268af", "#e56aa3", "#f46f96",
+                "#ff7a85", "#ff8a73", "#ff9d63", "#ffb356", "#fdc950", "#ebdf56", "#d2f468"];
+
 var colors = d3.scaleOrdinal(["#1e6cc0", "#5a6cc4", "#806bc3", "#a069bf", "#bb68b8", "#d268af", "#e56aa3", "#f46f96",
                 "#ff7a85", "#ff8a73", "#ff9d63", "#ffb356", "#fdc950", "#ebdf56", "#d2f468"]);
 var songInfo = [];
+var songData = [];
 var wordTotals = [];
-
+var list = [];
 var sideInfo = d3.select("#vis")
     .append("div")
     .attr("class","info")
@@ -12,6 +16,7 @@ var sideInfo = d3.select("#vis")
 var width = window.innerWidth-250, height = window.innerHeight-50, sizeDivisor = 100, nodePadding = 1.5;
 
 var nodes = [{},{},{}];
+
 var svg = d3.select("#vis")
     .append("svg")
     .attr("id","svg")
@@ -19,14 +24,30 @@ var svg = d3.select("#vis")
      .attr("height", height);
      width = document.getElementById("svg").clientWidth;
 
+
 var padding = {t: 40, r: 40, b: 40, l: 40};
 
 var vis = svg.append('g')
     .attr('transform', 'translate('+[padding.l,padding.t]+')');
 // create a tooltip
 
-     
+
+//combine into just one svg later
+var svg2 = d3.select("#songVis")
+    .append("svg")
+    .attr("id","svg")
+    .attr("width", 700)
+     .attr("height", height);
+    //  width = document.getElementById("svg").clientWidth;   
    
+var sVis = svg2.append('g')
+    .attr('transform', 'translate('+[padding.l,padding.t]+')');
+
+
+var nameText = sVis.append('text')
+    .attr("class","nameText")
+    .text("");
+
 // Three function that changes the tooltip when user hovers / moves / leaves a cell
 var mouseover = function(d) {
   d=d.target.__data__;
@@ -57,21 +78,21 @@ var simulation = d3.forceSimulation(nodes)
         .force("charge", d3.forceManyBody().strength(-3.5));
 
 d3.csv('charli.csv', dataPreprocessor).then(function(dataset) {
-  var list;
 
   //load the json file
   d3.json('Lyrics_Charli.json').then(function(data){
-    // console.log(data.tracks);
-    list = data.tracks;
+    //  console.log(data.tracks);
+     list = data.tracks;
     // console.log(list);
-    dataPreprocessorSongs(list,dataset);
-  });
+    dataPreprocessorSongs(list);
+    songVis(songInfo);
+  //   featureVis(songInfo);
+  //  featureVis2(songData);
   circleVis(dataset);
+  });
   //  titleVis(dataset);
   //  console.log(dataset);
 });
-
-
 
 // Recall that when data is loaded into memory, numbers are loaded as Strings
 // This function converts numbers into Strings during data preprocessing
@@ -84,25 +105,54 @@ function dataPreprocessor(row) {
     };
 }
 
-function dataPreprocessorSongs(data,lyrics){
+function dataPreprocessorSongs(data){
 //make an array with the song name, list of artists, popularity
 //go through each song
- console.log(data);
+//  console.log(data);
 var features = [];
+var temp = [];
   data.forEach((d,i) => {
     var featuresBySong = [];
+    
+    var index;
+    
     //name: , features: , length: ,
+    var name = d.song.title;
+    var fIndex = 0;
+    //go in to each song
+    d.song.featured_artists.forEach((d)=>{
+      
+      //add all the artists to an array
+      index = temp.indexOf(d.name);
+      
+      if( index == -1){
+      temp.push(d.name);
+      
+    }
+     index = temp.indexOf(d.name);
+    
+      songData.push({artist: d.name, title: name, num: i, artistNum: index, featureNum: fIndex}
+        //each artist has unique id int
+        )
+        
+      fIndex++;
+    }
+    );
+// console.log(temp);
+    
+
     songInfo.push({name: d.song.title,
     features: d.song.featured_artists}
     );
-
+    
     features=songInfo[i].features;
-    features.forEach((d) => featuresBySong.push(d.name));
+    features.forEach((d) => {featuresBySong.push(d.name);});
     songInfo[i].features=featuresBySong;
   });
 
-  console.log(songInfo);
-
+  // console.log(songData);
+  //  console.log(songInfo.length);
+  
   
   // songInfo.forEach((d,i)=> {  
   //   // console.log(d.features);
@@ -135,6 +185,7 @@ function circleVis(dataset){
                 .attr("cy", function(d){ return d.y - 35; })
           });
 
+ console.log(graph);
     var node = vis.append("g")
           .attr("class", "node")
         .selectAll("circle")
@@ -151,4 +202,132 @@ function circleVis(dataset){
 
 }
 
+function songVis(data){
+
+
+  //  var name = sVis.append("div")
+  //   .attr("class", "songName")
+  //   // .selectAll("text")
+  //   .append("text")
+  //   .text(function(){return songname;});
+var name;
+console.log(data);
+  var dots = sVis.append("g")
+          .attr("class", "node")
+        .selectAll("circle").data(data);
+
+    var dotsEnter = 
+        
+        dots.enter()
+      .append('rect')
+      .attr("class","bySong")
+          .attr("width", 20)
+          // .attr("height",  function(d){ return d.features.length * 20 + 20;})
+          .attr("height", 20)
+          .attr("fill", function(d,i){ 
+            
+            return colorScale[i];})
+          // .attr("opacity", 0.6)
+          .attr("x", function(d,i){ return i *30; })
+          .attr("y", function(d,i){ return height - 170; });
+ 
+      dotsEnter
+          .on("mouseover", function(event,d){
+            var[x,y] = d3.pointer(event);
+            nameText.text(d.name)
+            .style("fill", "#f1ede9")
+            .attr("x",x - 20 )
+            .attr("y", (y - 20));
+          })
+          // .on("mousemove", mousemove)
+           .on("mouseleave", function(){
+            nameText.text(" ");
+           });
+  //one round circle of all the songs
+
+
+
+  //function that lists all the points on a circle
+}
+
+function featureVis2(data){
+  //scatter plot of the song x artists (x,y), charli as 1, 2 is the next, 3 troye, etc
+
+// var parent = 
+
+//on hover the 
+var dots = sVis.append("g")
+      .selectAll('circle')
+      .data(data);
+//artist, song name
+  var dotsEnter = dots
+      .enter()
+      .append('rect')
+      .attr("class","bySong")
+          .attr("width", 20)
+          .attr("height",  function(d){ return 20;})
+          .attr("fill", function(d,i){ 
+            
+            return colorScale[d.num];})
+          .attr("x", function(d,i){ return d.num * 30; })
+          .attr("y", function(d,i){return -d.featureNum * 30 + height - 200; });
+          // .attr("z-index",1
+          
+      dotsEnter
+          .on("mouseover", function(event,d){
+            var[x,y] = d3.pointer(event);
+            
+            nameText.text(d.artist)
+            .style("fill", "#f1ede9")
+            .attr("x",x -30)
+            .attr("y",y - 50);
+          })
+          // .on("mousemove", mousemove)
+           .on("mouseleave", function(){
+            nameText.text(" ");
+           });
+}
+
+
+function featureVis(data){
+  //scatter plot of the song x artists (x,y), charli as 1, 2 is the next, 3 troye, etc
+
+// var parent = 
+
+//on hover the 
+console.log(data);
+var dots = sVis.append("g")
+      .selectAll('rect')
+      .data(data);
+//artist, song name
+  var dotsEnter = dots
+      .enter()
+      .append('rect')
+      .attr("class","bySong")
+          .attr("width", 20)
+          // .attr("height",  function(d){ return d.features.length * 20 + 20;})
+          .attr("height", 20)
+          .attr("fill", function(d,i){ 
+            
+            return colorScale[i];})
+          // .attr("opacity", 0.6)
+          .attr("x", function(d,i){ return i *30; })
+          .attr("y", function(d,i){ return height - 170; });
+          // .attr("z-index",1
+          
+      dotsEnter
+          .on("mouseover", function(event,d){
+           var[x,y] = d3.pointer(event); 
+           nameText.style("fill", "#f1ede9")
+            .text("Charli XCX")
+            .attr("x",x )
+            .attr("y", (330));
+            
+          
+          })
+          // .on("mousemove", mousemove)
+           .on("mouseleave", function(){
+            nameText.text(" ");
+           });
+}
 //if there isn't that word there, then skip space

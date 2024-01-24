@@ -1,6 +1,6 @@
 svg {
     flex: 3;
-    /* border: 1px solid #777; */
+    border: 1px solid #777;
     
 }
 
@@ -151,4 +151,11 @@ p.intro{
 #vis{
     display: flex;
     position: relative;
+}
+
+
+.nameText{
+    background-color: red;
+    color: bisque;
+    font-size: 30px;
 }

@@ -1,0 +1,9 @@
+#main{
+    display: flex;
+}
+
+#sideInfo{
+    height: 400px;
+    width: 200px;
+    background-color: aquamarine;
+}
