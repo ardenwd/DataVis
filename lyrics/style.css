@@ -127,7 +127,7 @@ p.intro{
 }
 
 .break{
-    height: 200px;
+    height: 400px;
 }
 
 #img-wrapper{
@@ -158,4 +158,22 @@ p.intro{
     background-color: red;
     color: bisque;
     font-size: 30px;
+}
+
+.side-text{
+    width: 50%;
+}
+
+#vis-1{
+    display: inline-block;
+    position: fixed;
+    visibility: hidden;
+    top: 0;
+    right: 0;
+} 
+
+.charli-pic{
+    display: flex;
+    width: 80%;
+    margin: auto;
 }

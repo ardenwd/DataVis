@@ -1,0 +1,32 @@
+﻿Name,Date,Time,Caffeine,Geolocation,Feeling,Sleep,Valence (x),Arousal (y),Color
+
+Cathy,3-7-24,10:00,0,Maulding,"Tired, bored",7,-0.5,-0.625,#4D97FF
+Cathy,3-7-24,12:00,160,Skiles,Enthusiastic,7,1.0,0.0,#FFE588
+Cathy,3-7-24,2:00,0,Maulding,"optimistic, inspired",7,0.75,0.5,#FF9F80
+Cathy,3-7-24,4:00,0,Home,"happy, content, tired",7,0.0,-0.25,#B0D7FF
+Cathy,3-7-24,6:00,0,Home,"tired, irritated",7,-0.375,-0.625,#67D3FF
+Cathy,3-13-24,10:00,0,Maulding,"tired, irritated",6.5,-0.375,-0.625,#67D3FF
+Cathy,3-13-24,12:00,0,Maulding,"content, enthusiastic",6.5,0.125,0.25,#FFC394
+Arden,3-11-24,10:00,0,Home Park,"Sleepy, happy",8.5,-0.25,-0.375,#5B89FF
+Arden,3-11-24,12:00,60,Instructional Center,"Sleepy, Focused",8.5,0.375,-0.1875,#FFAC8A
+Arden,3-11-24,2:00,0,Skiles,"Inspired, neutral",8.5,0.625,0.0,#FFC394
+Arden,3-11-24,4:00,60,Hive,"Angsty, overwhelmed ",8.5,-0.4375,-0.25,#4A90FF
+Arden,3-11-24,6:00,0,"Love manufacturing ","Overwhelmed, focused ",8.5,-0.125,-0.1875,#6A9FFF
+Arden,3-12-24,10:00,0," Home park ",stressed. Tired,5,-0.5,-1.0,#62E6FF
+Arden,3-12-24,12:00,60,"East palisades ","inspired, happy ",5,0.5,-0.375,#FFC394
+Arden,3-12-24,2:00,100,HR,"Optimistic, focused ",5,0.75,0.0,#FFC394
+Arden,3-12-24,4:00,0,Cafe,"focused, inspired",5,0.75,0.5,#FF9F80
+Arden,3-12-24,6:00,0,Cafe,"focused, happy",5,0.75,0.5,#FF9F80
+Arden,3-13-24,10:00,30,Crc,"Prepared, content",6.5,0.125,0.25,#FFC394
+Arden,3-13-24,12:00,40,"Outside Paper and clay ","Content, chill",6.5,-0.125,0.375,#A485FF
+Srishti,3-11-24,10:00,60,SQ5,Energized,8,-0.25,0.75,#FF85F2
+Srishti,3-11-24,12:00,0,Skiles,Focused,8,0.375,0.0,#FFA366
+Srishti,3-11-24,2:00,0,"Stephen C. Hall ",Chill,8,-0.25,0.0,#8E66FF
+Srishti,3-11-24,4:00,0,Skiles,Bored,8,-0.25,-0.375,#7386FF
+Srishti,3-11-24,6:00,100,Whistler,Energized,8,0.25,0.75,#FFC394
+Srishti,3-12-24,10:00,95,SQ5,Stressed,7,0.125,-1.0,#A485FF
+Srishti,3-12-24,12:00,0,SQ5,"Composed, optimistic",7,0.5,0.0,#FFC394
+Srishti,3-12-24,2:00,0,Glenwood,Energetic,7,0.75,0.5,#FF9F80
+Srishti,3-12-24,4:00,0,Little 5 Points,"Content, happy",7,0.0,0.0,#FFD7B6
+Srishti,3-12-24,6:00,100,Glenwood,Sleepy,7,0.25,-0.625,#7A7AFF
+Srishti,3-13-24,10:00,0,SQ5,Enthusiastic,9,0.0,0.5,#FFC394

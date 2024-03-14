@@ -7,6 +7,7 @@ var songInfo = [];
 var songData = [];
 var wordTotals = [];
 var list = [];
+var data;
 var sideInfo = d3.select("#vis")
     .append("div")
     .attr("class","info")
@@ -33,7 +34,7 @@ var vis = svg.append('g')
 
 
 //combine into just one svg later
-var svg2 = d3.select("#songVis")
+var svg2 = d3.select("#vis-1")
     .append("svg")
     .attr("id","svg")
     .attr("width", 700)
@@ -77,6 +78,9 @@ var simulation = d3.forceSimulation(nodes)
         .force("center", d3.forceCenter().x(width * .5).y(height * .5))
         .force("charge", d3.forceManyBody().strength(-3.5));
 
+
+//load at the start of the program
+//process the data
 d3.csv('charli.csv', dataPreprocessor).then(function(dataset) {
 
   //load the json file
@@ -85,7 +89,7 @@ d3.csv('charli.csv', dataPreprocessor).then(function(dataset) {
      list = data.tracks;
     // console.log(list);
     dataPreprocessorSongs(list);
-    songVis(songInfo);
+    // songVis(songInfo);
   //   featureVis(songInfo);
   //  featureVis2(songData);
   circleVis(dataset);
@@ -204,21 +208,14 @@ function circleVis(dataset){
 
 function songVis(data){
 
-
-  //  var name = sVis.append("div")
-  //   .attr("class", "songName")
-  //   // .selectAll("text")
-  //   .append("text")
-  //   .text(function(){return songname;});
-var name;
-console.log(data);
+  var name;
+  console.log(data);
   var dots = sVis.append("g")
           .attr("class", "node")
         .selectAll("circle").data(data);
 
     var dotsEnter = 
-        
-        dots.enter()
+      dots.enter()
       .append('rect')
       .attr("class","bySong")
           .attr("width", 20)
@@ -244,9 +241,6 @@ console.log(data);
             nameText.text(" ");
            });
   //one round circle of all the songs
-
-
-
   //function that lists all the points on a circle
 }
 
@@ -331,3 +325,68 @@ var dots = sVis.append("g")
            });
 }
 //if there isn't that word there, then skip space
+
+
+
+var controller = new ScrollMagic.Controller();
+
+
+var start = new ScrollMagic.Scene({
+  triggerElement: '#hide-vis',
+  // duration: 300
+})
+.addTo(controller); // Add Scene to ScrollMagic Controller
+
+start.on("enter", function(){
+  //here is where you call the relevant viz function
+  //make svg opacity 0
+  console.log('hi');
+    document.getElementById("vis-1").style.visibility = "hidden"; 
+    
+});
+
+var svgVis =  new ScrollMagic.Scene({
+  triggerElement: '#vis-1',
+  duration: 300
+})
+.addTo(controller); // Add Scene to ScrollMagic Controller
+
+
+//songVis is the name of the vis
+var songVis1 = new ScrollMagic.Scene({
+  triggerElement: '#songVis',
+  duration: 300
+})
+.addTo(controller); // Add Scene to ScrollMagic Controller
+
+songVis1.on("enter", function(){
+  //here is where you call the relevant viz function
+  console.log('hi1');});
+songVis(songInfo);
+  document.getElementById("vis-1").style.visibility = "visible"; 
+
+//featureVis
+var featureVis1 = new ScrollMagic.Scene({
+  triggerElement: '#featureVis'
+    
+})
+.addTo(controller); // Add Scene to ScrollMagic Controller
+
+featureVis1.on("enter", function(){
+  //here is where you call the relevant viz function
+  featureVis(songInfo);
+  console.log('hi2');});
+
+//lyricVis
+var lyricVis = new ScrollMagic.Scene({
+  triggerElement: '#lyricVis'
+  })
+  .addTo(controller); // Add Scene to ScrollMagic Controller
+
+lyricVis.on("enter", function(){
+  //here is where you call the relevant viz function
+  featureVis2(songData);
+  console.log('hi3');});
+
+
+//so when you get to the next section, change the vis 

@@ -1,0 +1,20 @@
+
+text.nameText{
+    font-size: 5px;
+    transform: translate(-15px,-4px);
+    font-weight: 700;
+    visibility: hidden;
+}
+
+g:hover text.nameText{
+    visibility: visible;
+    font-size: 10px;
+}
+
+g:hover circle{
+    opacity: 1;
+}
+
+text{
+    font-family: sans-serif;
+}
