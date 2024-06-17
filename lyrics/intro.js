@@ -17,7 +17,6 @@ var svgVis =  new ScrollMagic.Scene({
 })
 .addTo(controller); // Add Scene to ScrollMagic Controller
 
-
 var start = new ScrollMagic.Scene({
   triggerElement: '#hide-vis',
   // duration: 300
@@ -32,10 +31,7 @@ start.on("enter", function(){
 
   //hide what isn't shown this time
   svg2.attr("visibility","hidden");
-
-
 });
-
 
 //songVis is the name of the vis
 var songVis = new ScrollMagic.Scene({

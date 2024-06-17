@@ -1,0 +1,14 @@
+.step{
+    height : 1000px;
+}
+
+#graphic{
+    width: 600px;
+    height: 400px;
+    border: 1px solid black;
+    position: fixed;
+    margin: 40px;
+    right: 0;
+    bottom: 35%;
+    transition: opacity 250ms ease-in;
+}

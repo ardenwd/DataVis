@@ -1,6 +1,10 @@
 svg {
     flex: 3;
     border: 1px solid #777;
+    /* width: 80%; */
+    margin: 30px;
+    margin-right: 100px;
+    padding: 35px;
     
 }
 
@@ -10,7 +14,6 @@ body{
     font-family: garamond;
     /* turn on for info graph vis */
     /* display: flex; */
-    
 }
 
 .info {
@@ -37,7 +40,6 @@ body{
     color:white;
     line-height: 30%;
     font-size: 15px;
-    
 }
 
 circle {
@@ -94,7 +96,6 @@ p.intro{
     0%{ color:#f0f0f0}
     80%{ color:#f0f0f0}
     100%{ }
-
 }
 
 #charli{
@@ -127,7 +128,7 @@ p.intro{
 }
 
 .break{
-    height: 400px;
+    height: 600px;
 }
 
 #img-wrapper{
@@ -148,28 +149,27 @@ p.intro{
     max-height: 100%;
 }
 
-#vis{
-    display: flex;
-    position: relative;
-}
-
 
 .nameText{
     background-color: red;
     color: bisque;
-    font-size: 30px;
+    font-size: 60px;
 }
 
 .side-text{
     width: 50%;
 }
 
-#vis-1{
-    display: inline-block;
+#vis{
+    display: flex;
     position: fixed;
     visibility: hidden;
-    top: 0;
-    right: 0;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 50%;
+    margin-top: -15%;
+    margin-left: -50%;
 } 
 
 .charli-pic{

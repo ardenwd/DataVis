@@ -42,7 +42,13 @@ svg.append('g').attr('class', 'y axis')
         .attr('class', 'label')
         .attr('transform','translate(15,200) rotate(-90)');
 
+
+
 d3.csv('caffeine-data.csv').then(function(dataset){
+    
+
+
+
     var dataByNameAndDate = d3.group(dataset, d => d.Name, d => d.Date);
     dataByNameAndDate.forEach(function(d){ drawLines(svg,d)});
     
@@ -54,20 +60,20 @@ d3.csv('caffeine-data.csv').then(function(dataset){
 
 
 
-function createPlayerPixel(svg, d) {
-     var nameGroup = svg.append('g');
+function createPlayerPixel(svg, data) {
 
-    nameGroup.attr("transform", "translate("+yearScale(d.Time)+","+caffeineScale(d.Caffeine)+")");
+      var node = svg.selectAll('.node')
+        .data(data)
+        .enter()
+        .append('circle')
+        .attr('class', 'node')
+        .attr('cx', function(d){return yearScale(d.Time);})
+        .attr('cy', function(d){ return caffeineScale(d.Caffeine); })
+        .attr('r', function(d){ return ((d.Sleep - 3) * 3) + "px"; })
+        .attr("fill", function(d) { return d.Color });
+  
 
-    var circle = nameGroup.append('circle');
-
-    // circle.attr('cx', scaleYear(d.year));
-    // circle.attr('cy', scaleHomeruns(d.homeruns));
-    circle.attr('r', function(){return ((d.Sleep - 3) * 3) + "px";});
-
-    circle.style('fill', function(){return d.Color;});
-
-    var nameText = nameGroup.append("text");
+    var nameText = node.append("text");
     nameText.text(function(){return d.Name + " slept " + d.Sleep + " hours and was " + d.Feeling;}).attr('class', 'nameText')
 }
 

@@ -8,13 +8,14 @@ var songData = [];
 var wordTotals = [];
 var list = [];
 var data;
+
+var lyricDataset;
 var sideInfo = d3.select("#vis")
     .append("div")
-    .attr("class","info")
-    .html("<p class=\"info-text\">Each bubble is a word. Hover over one to see how many times its said!</p>");
+    .attr("class","info");
 
 // var width = +svg.attr('width');
-var width = window.innerWidth-250, height = window.innerHeight-50, sizeDivisor = 100, nodePadding = 1.5;
+var width = window.innerWidth-250, height = window.innerHeight-350, sizeDivisor = 100, nodePadding = 1.5;
 
 var nodes = [{},{},{}];
 
@@ -32,20 +33,7 @@ var vis = svg.append('g')
     .attr('transform', 'translate('+[padding.l,padding.t]+')');
 // create a tooltip
 
-
-//combine into just one svg later
-var svg2 = d3.select("#vis-1")
-    .append("svg")
-    .attr("id","svg")
-    .attr("width", 700)
-     .attr("height", height);
-    //  width = document.getElementById("svg").clientWidth;   
-   
-var sVis = svg2.append('g')
-    .attr('transform', 'translate('+[padding.l,padding.t]+')');
-
-
-var nameText = sVis.append('text')
+var nameText = vis.append('text')
     .attr("class","nameText")
     .text("");
 
@@ -83,6 +71,7 @@ var simulation = d3.forceSimulation(nodes)
 //process the data
 d3.csv('charli.csv', dataPreprocessor).then(function(dataset) {
 
+  lyricDataset = dataset;
   //load the json file
   d3.json('Lyrics_Charli.json').then(function(data){
     //  console.log(data.tracks);
@@ -92,11 +81,13 @@ d3.csv('charli.csv', dataPreprocessor).then(function(dataset) {
     // songVis(songInfo);
   //   featureVis(songInfo);
   //  featureVis2(songData);
-  circleVis(dataset);
+  // circleVis(dataset);
   });
   //  titleVis(dataset);
   //  console.log(dataset);
 });
+
+
 
 // Recall that when data is loaded into memory, numbers are loaded as Strings
 // This function converts numbers into Strings during data preprocessing
@@ -112,9 +103,10 @@ function dataPreprocessor(row) {
 function dataPreprocessorSongs(data){
 //make an array with the song name, list of artists, popularity
 //go through each song
-//  console.log(data);
 var features = [];
 var temp = [];
+var artists = [];
+//go through the song
   data.forEach((d,i) => {
     var featuresBySong = [];
     
@@ -123,15 +115,16 @@ var temp = [];
     //name: , features: , length: ,
     var name = d.song.title;
     var fIndex = 0;
-    //go in to each song
+    //go in to each artist
     d.song.featured_artists.forEach((d)=>{
-      
+      // artists.push({artist: d.name, title})
+      // console.log(d);
+
       //add all the artists to an array
       index = temp.indexOf(d.name);
       
       if( index == -1){
       temp.push(d.name);
-      
     }
      index = temp.indexOf(d.name);
     
@@ -142,7 +135,7 @@ var temp = [];
       fIndex++;
     }
     );
-// console.log(temp);
+console.log(songData);
     
 
     songInfo.push({name: d.song.title,
@@ -152,29 +145,8 @@ var temp = [];
     features=songInfo[i].features;
     features.forEach((d) => {featuresBySong.push(d.name);});
     songInfo[i].features=featuresBySong;
+    // console.log(features);
   });
-
-  // console.log(songData);
-  //  console.log(songInfo.length);
-  
-  
-  // songInfo.forEach((d,i)=> {  
-  //   // console.log(d.features);
-  //     features = d.features;
-  //     console.log(features);
-  //     // if(features.length > 0)
-  
-  //   });
-
-  // console.log(features);
-  // songInfo.forEach((d)=>{console.log(d);});
-  // console.log(songInfo);
-  // console.log(features);
-  // var a = d3.rollups(data, d => d[0]);
-  // console.log(a);
-  // console.log(songInfo);
-  // songInfo = d3.rollups(data, v => v.song.primary_artist.name); 
-  //  console.log(data.song);
 
 }
 
@@ -189,33 +161,40 @@ function circleVis(dataset){
                 .attr("cy", function(d){ return d.y - 35; })
           });
 
- console.log(graph);
     var node = vis.append("g")
           .attr("class", "node")
         .selectAll("circle")
         .data(graph)
         .enter().append("circle")
+          .attr("class","circles")
           .attr("r", function(d) { return d.radius; })
-          .attr("fill", function(d) { return colors(d.Song); })
+          
           .attr("cx", function(d){ return d.x; })
           .attr("cy", function(d){ return d.y; })
           .attr("z-index",1)
           .on("mouseover", mouseover)
           .on("mousemove", mousemove)
-          .on("mouseleave", mouseleave);
-
+          .on("mouseleave", mouseleave)
+          // .transition()
+          // .duration(1500)
+          .attr("fill", function(d) { return colors(d.Song); });
 }
 
 function songVis(data){
 
-  var name;
-  console.log(data);
-  var dots = sVis.append("g")
-          .attr("class", "node")
-        .selectAll("circle").data(data);
+  vis.selectAll('.byArtist')
+  .transition()
+  .duration(1500)
+      .attr("x", function(d,i){ return d.num * 30; })
+      .attr("y", function(d,i){ return height - 170; })
+      .remove();
+  
+  var dots = vis.append("g")
+      .attr("class", "node")
+      .selectAll("rect").data(data);
 
-    var dotsEnter = 
-      dots.enter()
+  var dotsEnter = 
+    dots.enter()
       .append('rect')
       .attr("class","bySong")
           .attr("width", 20)
@@ -227,7 +206,7 @@ function songVis(data){
           // .attr("opacity", 0.6)
           .attr("x", function(d,i){ return i *30; })
           .attr("y", function(d,i){ return height - 170; });
- 
+
       dotsEnter
           .on("mouseover", function(event,d){
             var[x,y] = d3.pointer(event);
@@ -244,27 +223,32 @@ function songVis(data){
   //function that lists all the points on a circle
 }
 
-function featureVis2(data){
+function featureVis(data){
   //scatter plot of the song x artists (x,y), charli as 1, 2 is the next, 3 troye, etc
 
-// var parent = 
-
-//on hover the 
-var dots = sVis.append("g")
-      .selectAll('circle')
+  // vis.selectAll('circle').transition().duration(1000)
+  // .attr('opacity',0);
+  // remove();
+var dots = vis.append("g")
+      .selectAll('rect')
       .data(data);
+
 //artist, song name
   var dotsEnter = dots
       .enter()
-      .append('rect')
-      .attr("class","bySong")
-          .attr("width", 20)
-          .attr("height",  function(d){ return 20;})
-          .attr("fill", function(d,i){ 
-            
-            return colorScale[d.num];})
+      .append('rect') 
+      .attr("class","byArtist")
+      .attr("width", 20)
+      .attr("height",  20)
+      .attr("fill", function(d,i){ 
+        return colorScale[d.num];})
+      .attr("x", function(d,i){ return d.num * 30; })
+      .attr("y", function(d,i){ return height - 170; });
+      dotsEnter
+      .transition()
+      .duration(1200)
           .attr("x", function(d,i){ return d.num * 30; })
-          .attr("y", function(d,i){return -d.featureNum * 30 + height - 200; });
+          .attr("y", function(d,i){ return height - 200 - d.featureNum * 30 ; });
           // .attr("z-index",1
           
       dotsEnter
@@ -283,110 +267,102 @@ var dots = sVis.append("g")
 }
 
 
-function featureVis(data){
-  //scatter plot of the song x artists (x,y), charli as 1, 2 is the next, 3 troye, etc
-
-// var parent = 
-
-//on hover the 
-console.log(data);
-var dots = sVis.append("g")
-      .selectAll('rect')
-      .data(data);
-//artist, song name
-  var dotsEnter = dots
-      .enter()
-      .append('rect')
-      .attr("class","bySong")
-          .attr("width", 20)
-          // .attr("height",  function(d){ return d.features.length * 20 + 20;})
-          .attr("height", 20)
-          .attr("fill", function(d,i){ 
-            
-            return colorScale[i];})
-          // .attr("opacity", 0.6)
-          .attr("x", function(d,i){ return i *30; })
-          .attr("y", function(d,i){ return height - 170; });
-          // .attr("z-index",1
-          
-      dotsEnter
-          .on("mouseover", function(event,d){
-           var[x,y] = d3.pointer(event); 
-           nameText.style("fill", "#f1ede9")
-            .text("Charli XCX")
-            .attr("x",x )
-            .attr("y", (330));
-            
-          
-          })
-          // .on("mousemove", mousemove)
-           .on("mouseleave", function(){
-            nameText.text(" ");
-           });
-}
-//if there isn't that word there, then skip space
-
-
-
 var controller = new ScrollMagic.Controller();
 
 
-var start = new ScrollMagic.Scene({
+//add the first scene to the controller
+var startScene = new ScrollMagic.Scene({
   triggerElement: '#hide-vis',
   // duration: 300
 })
 .addTo(controller); // Add Scene to ScrollMagic Controller
 
-start.on("enter", function(){
+//hide the vis when this point is approached
+startScene.on("enter", function(){
   //here is where you call the relevant viz function
   //make svg opacity 0
   console.log('hi');
-    document.getElementById("vis-1").style.visibility = "hidden"; 
-    
+    document.getElementById("vis").style.visibility = "visible"; 
 });
 
-var svgVis =  new ScrollMagic.Scene({
-  triggerElement: '#vis-1',
-  duration: 300
-})
-.addTo(controller); // Add Scene to ScrollMagic Controller
+//hide the vis when this point is approached
+startScene.on("leave", function(){
+  //here is where you call the relevant viz function
+  //make svg opacity 0
+  console.log('hi');
+    document.getElementById("vis").style.visibility = "hidden"; 
+});
+
+
 
 
 //songVis is the name of the vis
-var songVis1 = new ScrollMagic.Scene({
+var songVisScene = new ScrollMagic.Scene({
   triggerElement: '#songVis',
   duration: 300
 })
 .addTo(controller); // Add Scene to ScrollMagic Controller
 
-songVis1.on("enter", function(){
+songVisScene.on("enter", function(){
   //here is where you call the relevant viz function
-  console.log('hi1');});
-songVis(songInfo);
-  document.getElementById("vis-1").style.visibility = "visible"; 
+  console.log('hi1');
+  document.getElementById("vis").style.visibility = "visible"; 
+  songVis(songInfo);
+      sideInfo.html("<p class=\"info-text\">Hover over a square to see the song</p>");
+});
 
-//featureVis
-var featureVis1 = new ScrollMagic.Scene({
+
+  //featureVis
+var featureVisScene = new ScrollMagic.Scene({
   triggerElement: '#featureVis'
     
 })
 .addTo(controller); // Add Scene to ScrollMagic Controller
 
-featureVis1.on("enter", function(){
+featureVisScene.on("enter", function(){
   //here is where you call the relevant viz function
-  featureVis(songInfo);
+  featureVis(songData);
+    sideInfo.html("<p class=\"info-text\">Hover over a square to see the artist</p>");
+
   console.log('hi2');});
 
+
+
+
 //lyricVis
-var lyricVis = new ScrollMagic.Scene({
+var lyricVisScene = new ScrollMagic.Scene({
   triggerElement: '#lyricVis'
   })
   .addTo(controller); // Add Scene to ScrollMagic Controller
 
-lyricVis.on("enter", function(){
+lyricVisScene.on("enter", function(){
   //here is where you call the relevant viz function
-  featureVis2(songData);
+  vis.selectAll('rect')
+    .transition()
+    .duration(1200)
+    .attr('opacity',0)
+    .remove();
+
+  circleVis(lyricDataset);
+
+  sideInfo.html("<p class=\"info-text\">Each bubble is a word. Hover over one to see how many times its said!</p>");
+
   console.log('hi3');});
 
+lyricVisScene.on("leave", function(){
+  console.log("leaving");
+  var circles = vis.selectAll('circle').enter();
+  circles.transition()
+  .duration(1500)
+    .attr("opacity",0);
 
-//so when you get to the next section, change the vis 
+
+  // vis.selectAll('rect')
+  // .attr('opacity',0)
+  // .transition().duration(200)
+  // .attr('opacity',1.0);
+
+  featureVis(songData);
+
+  
+})
