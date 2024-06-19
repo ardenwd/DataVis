@@ -469,4 +469,5 @@ lyricVisSceneMid.on("leave", function(){
   //make the artists disappear
   
   featureVis(songData);
+  songVis(songInfo);
   console.log('lyric at mid leaving');});
