@@ -61,7 +61,7 @@ var mouseleave = function(d) {
 }
 
 var simulation = d3.forceSimulation(nodes)
-        .force("forceX", d3.forceX().strength(.1).x(width * .5))
+        .force("forceX", d3.forceX().strength(.1).x(width * .4))
         .force("forceY", d3.forceY().strength(.1).y(height * .5))
         .force("center", d3.forceCenter().x(width * .5).y(height * .5))
         .force("charge", d3.forceManyBody().strength(-3.5));
