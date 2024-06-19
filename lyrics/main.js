@@ -12,7 +12,7 @@ var data;
 var lyricDataset;
 var sideInfo = d3.select("#vis")
     .append("div")
-    .attr("class","info");
+    .attr("id","info");
 
 // var width = +svg.attr('width');
 var width = window.innerWidth-250, height = window.innerHeight-350, sizeDivisor = 100, nodePadding = 1.5;
@@ -70,21 +70,12 @@ var simulation = d3.forceSimulation(nodes)
 //load at the start of the program
 //process the data
 d3.csv('charli.csv', dataPreprocessor).then(function(dataset) {
-
   lyricDataset = dataset;
   //load the json file
   d3.json('Lyrics_Charli.json').then(function(data){
-    //  console.log(data.tracks);
-     list = data.tracks;
-    // console.log(list);
+    list = data.tracks;
     dataPreprocessorSongs(list);
-    // songVis(songInfo);
-  //   featureVis(songInfo);
-  //  featureVis2(songData);
-  // circleVis(dataset);
   });
-  //  titleVis(dataset);
-  //  console.log(dataset);
 });
 
 
@@ -150,7 +141,7 @@ console.log(songData);
 
 }
 
-function circleVis(dataset){
+function lyricVis(dataset){
 
     graph = dataset;
     simulation.nodes(graph)
@@ -180,14 +171,48 @@ function circleVis(dataset){
           .attr("fill", function(d) { return colors(d.Song); });
 }
 
-function songVis(data){
-
-  vis.selectAll('.byArtist')
+function removeFeatures(){
+    vis.selectAll('.byArtist')
   .transition()
   .duration(1500)
       .attr("x", function(d,i){ return d.num * 30; })
       .attr("y", function(d,i){ return height - 170; })
+      // .attr("opacity",0)
       .remove();
+}
+
+function removeSongs(){
+    vis.selectAll('.bySong')
+      .transition()
+      .duration(1500)
+      .attr("opacity",0)
+      .remove();
+}
+
+function removeLyrics(){
+ 
+  vis.selectAll('circle').transition().duration(400)
+    .attr('opacity',0).
+    remove();
+}
+
+function removeInfo(){
+  sideInfo
+    .transition()
+    .duration(600)
+    .style("opacity",0);
+}
+
+function showInfo(){
+  sideInfo
+    .transition()
+    .duration(600)
+    .style("opacity",1);
+}
+
+
+
+function songVis(data){
   
   var dots = vis.append("g")
       .attr("class", "node")
@@ -197,15 +222,20 @@ function songVis(data){
     dots.enter()
       .append('rect')
       .attr("class","bySong")
-          .attr("width", 20)
-          // .attr("height",  function(d){ return d.features.length * 20 + 20;})
-          .attr("height", 20)
-          .attr("fill", function(d,i){ 
-            
-            return colorScale[i];})
-          // .attr("opacity", 0.6)
-          .attr("x", function(d,i){ return i *30; })
-          .attr("y", function(d,i){ return height - 170; });
+      .attr("width", 20)
+      // .attr("height",  function(d){ return d.features.length * 20 + 20;})
+      .attr("height", 20)
+      .attr("fill", function(d,i){ 
+        return colorScale[i];})
+      .attr("x", function(d,i){ return i *30; })
+      .attr("y", function(d,i){ return height - 170; });
+
+    //make the dots appear slowly
+    dotsEnter
+      .attr("opacity","0")
+      .transition()
+      .duration(1200)
+      .attr("opacity","1.0");
 
       dotsEnter
           .on("mouseover", function(event,d){
@@ -225,10 +255,8 @@ function songVis(data){
 
 function featureVis(data){
   //scatter plot of the song x artists (x,y), charli as 1, 2 is the next, 3 troye, etc
-
-  // vis.selectAll('circle').transition().duration(1000)
-  // .attr('opacity',0);
-  // remove();
+removeLyrics();
+ 
 var dots = vis.append("g")
       .selectAll('rect')
       .data(data);
@@ -270,28 +298,28 @@ var dots = vis.append("g")
 var controller = new ScrollMagic.Controller();
 
 
-//add the first scene to the controller
-var startScene = new ScrollMagic.Scene({
-  triggerElement: '#hide-vis',
-  // duration: 300
-})
-.addTo(controller); // Add Scene to ScrollMagic Controller
+// //add the first scene to the controller
+// var startScene = new ScrollMagic.Scene({
+//   triggerElement: '#hide-vis',
+//   // duration: 300
+// })
+// .addTo(controller); // Add Scene to ScrollMagic Controller
 
-//hide the vis when this point is approached
-startScene.on("enter", function(){
-  //here is where you call the relevant viz function
-  //make svg opacity 0
-  console.log('hi');
-    document.getElementById("vis").style.visibility = "visible"; 
-});
+// //hide the vis when this point is approached
+// startScene.on("enter", function(){
+//   //here is where you call the relevant viz function
+//   //make svg opacity 0
+//   console.log('hi');
+//     document.getElementById("vis").style.visibility = "visible"; 
+// });
 
-//hide the vis when this point is approached
-startScene.on("leave", function(){
-  //here is where you call the relevant viz function
-  //make svg opacity 0
-  console.log('hi');
-    document.getElementById("vis").style.visibility = "hidden"; 
-});
+// //hide the vis when this point is approached
+// startScene.on("leave", function(){
+//   //here is where you call the relevant viz function
+//   //make svg opacity 0
+//   console.log('hi');
+//     document.getElementById("vis").style.visibility = "hidden"; 
+// });
 
 
 
@@ -299,70 +327,146 @@ startScene.on("leave", function(){
 //songVis is the name of the vis
 var songVisScene = new ScrollMagic.Scene({
   triggerElement: '#songVis',
-  duration: 300
+  triggerHook: 0.15, 
+  duration: 200
 })
+.setPin("#songText")
 .addTo(controller); // Add Scene to ScrollMagic Controller
 
 songVisScene.on("enter", function(){
   //here is where you call the relevant viz function
-  console.log('hi1');
-  document.getElementById("vis").style.visibility = "visible"; 
+  console.log('song at top');
+  removeFeatures();
+  showInfo();
+  //make info opacity 1
+  
+  sideInfo.html("<p class=\"info-text\">Hover over a square to see the song</p>");
+});
+
+
+songVisScene.on("leave", function(){
+  //here is where you call the relevant viz function
+  removeInfo();
+  console.log('song at top leaving');
+});
+
+//songVis is the name of the vis
+var songVisSceneMid = new ScrollMagic.Scene({
+  triggerElement: '#songVis',
+  triggerHook: 0.6
+  // duration: 300
+})
+.addTo(controller); // Add Scene to ScrollMagic Controller
+
+songVisSceneMid.on("enter", function(){
+  //here is where you call the relevant viz function
+  console.log('song at mid');
+  // document.getElementById("vis").style.visibility = "visible"; 
+    vis.attr("opacity","0") 
+    .transition()
+    .duration(1000)
+    .attr("opacity","1.0") ;
   songVis(songInfo);
-      sideInfo.html("<p class=\"info-text\">Hover over a square to see the song</p>");
+      // sideInfo.html("<p class=\"info-text\">Hover over a square to see the song</p>");
+});
+
+songVisSceneMid.on("leave", function(){
+  //here is where you call the relevant viz function
+  removeSongs();
+  console.log('song at mid exit');
+  
+  // document.getElementById("vis").style.visibility = "hidden"; 
+  // songVis(songInfo);
+      // sideInfo.html("<p class=\"info-text\">Hover over a square to see the song</p>");
 });
 
 
   //featureVis
+  //we want to stick for 100px when this element is at 0, and for side text to appear
+  // and we want to call the function for the animation at 200
 var featureVisScene = new ScrollMagic.Scene({
-  triggerElement: '#featureVis'
-    
+  triggerElement: '#featureVis',
+  triggerHook: 0.15, 
+  duration: 200
 })
+.setPin("#featureText")
 .addTo(controller); // Add Scene to ScrollMagic Controller
 
 featureVisScene.on("enter", function(){
   //here is where you call the relevant viz function
-  featureVis(songData);
     sideInfo.html("<p class=\"info-text\">Hover over a square to see the artist</p>");
+    showInfo();
 
-  console.log('hi2');});
+  console.log('feature at top');});
+
+  featureVisScene.on("leave", function(){
+    removeInfo();
+    console.log('feature at top leaving');
+  });
 
 
 
+  //featureVis midPoint
+var featureVisSceneMid = new ScrollMagic.Scene({
+  triggerElement: '#featureVis',
+  triggerHook: 0.6
+    
+})
+.addTo(controller); // Add Scene to ScrollMagic Controller
 
-//lyricVis
+featureVisSceneMid.on("enter", function(){
+  //here is where you call the relevant viz function
+  featureVis(songData);
+  console.log('feature at mid');});
+
+
+featureVisSceneMid.on("leave", function(){
+  //here is where you call the relevant viz function
+  //make the artists disappear
+
+  console.log('feature at mid leaving');});
+
+  //lyricVis
+  //we want to stick for 100px when this element is at 0, and for side text to appear
+  // and we want to call the function for the animation at 200
 var lyricVisScene = new ScrollMagic.Scene({
-  triggerElement: '#lyricVis'
-  })
-  .addTo(controller); // Add Scene to ScrollMagic Controller
+  triggerElement: '#lyricVis',
+  triggerHook: 0.15, 
+  duration: 200
+})
+.setPin("#lyricText")
+.addTo(controller); // Add Scene to ScrollMagic Controller
 
 lyricVisScene.on("enter", function(){
   //here is where you call the relevant viz function
-  vis.selectAll('rect')
-    .transition()
-    .duration(1200)
-    .attr('opacity',0)
-    .remove();
+    showInfo();
 
-  circleVis(lyricDataset);
+  console.log('lyric at top');});
 
-  sideInfo.html("<p class=\"info-text\">Each bubble is a word. Hover over one to see how many times its said!</p>");
+    lyricVisScene.on("leave", function(){
+    removeInfo();
+    console.log('lyric at top leaving');
+  });
 
-  console.log('hi3');});
-
-lyricVisScene.on("leave", function(){
-  console.log("leaving");
-  var circles = vis.selectAll('circle').enter();
-  circles.transition()
-  .duration(1500)
-    .attr("opacity",0);
-
-
-  // vis.selectAll('rect')
-  // .attr('opacity',0)
-  // .transition().duration(200)
-  // .attr('opacity',1.0);
-
-  featureVis(songData);
-
-  
+  //lyricVis midPoint
+var lyricVisSceneMid = new ScrollMagic.Scene({
+  triggerElement: '#lyricVis',
+  triggerHook: 0.6
+    
 })
+.addTo(controller); // Add Scene to ScrollMagic Controller
+
+lyricVisSceneMid.on("enter", function(){
+  //make the squares disappear
+  removeFeatures();
+  removeSongs();
+  lyricVis(lyricDataset);
+  console.log('lyric at mid');});
+
+
+lyricVisSceneMid.on("leave", function(){
+  //here is where you call the relevant viz function
+  //make the artists disappear
+  
+  featureVis(songData);
+  console.log('lyric at mid leaving');});

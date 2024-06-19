@@ -1,6 +1,6 @@
 svg {
     flex: 3;
-    border: 1px solid #777;
+    /* border: 1px solid #777; */
     /* width: 80%; */
     margin: 30px;
     margin-right: 100px;
@@ -16,13 +16,13 @@ body{
     /* display: flex; */
 }
 
-.info {
+#info {
     flex: 1;
     margin: 30px;
     margin-left: 100px;
     background-color: #4c4c4c;
     padding: 35px;
-    opacity: 0.7;
+    opacity: 0;
 }
 
 .info-text{
@@ -52,6 +52,7 @@ height: 170px;
 
 .intro-wrapper{
     height: 30rem;
+    padding-top: 30%;
 }
 
 .intro{
@@ -127,8 +128,8 @@ p.intro{
     rotate: -6deg;
 }
 
-.break{
-    height: 600px;
+#break{
+    /* height: 250px; */
 }
 
 #img-wrapper{
@@ -158,12 +159,13 @@ p.intro{
 
 .side-text{
     width: 50%;
+    height: 700px;
 }
 
 #vis{
     display: flex;
     position: fixed;
-    visibility: hidden;
+    /* visibility: hidden; */
     top: 50%;
     left: 50%;
     width: 100%;
