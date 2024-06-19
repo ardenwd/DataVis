@@ -23,6 +23,7 @@ body{
     background-color: #4c4c4c;
     padding: 35px;
     opacity: 0;
+    margin-top: 5%;
 }
 
 .info-text{
@@ -52,7 +53,7 @@ height: 170px;
 
 .intro-wrapper{
     height: 30rem;
-    padding-top: 30%;
+    padding-top: 20%;
 }
 
 .intro{
@@ -129,7 +130,7 @@ p.intro{
 }
 
 #break{
-    /* height: 250px; */
+    height: 250px;
 }
 
 #img-wrapper{
