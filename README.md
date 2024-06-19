@@ -8,7 +8,7 @@
 
 ^_Work in Progress... but still worth a visit!_
 
-## Assignments for Intro to Info Visualization at Georgia Tech,
+## Assignments for Intro to Info Visualization at Georgia Tech:
 
 [Interactive Baseball Statistics\*](https://ardenwd.github.io/DataVis/lab3/activity_3/index.html)
 
