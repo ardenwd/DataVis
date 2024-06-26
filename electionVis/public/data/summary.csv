@@ -1,4 +1,4 @@
-"line number","contest name","choice name","party name","total votes","percent of votes","registered voters","ballots cast","num Precinct total","num Precinct rptg","over votes","under votes"
+"line number",contest,"choice name","party name","total votes","percent of votes","registered voters","ballots cast","num Precinct total","num Precinct rptg","over votes","under votes"
 1,"US House of Representatives - District 2 - Rep (Vote For 1)","Chuck Hand","REP",4063,34.23,418080,12351,30,30,"0","0"
 2,"US House of Representatives - District 2 - Rep (Vote For 1)","A. Wayne Johnson","REP",7807,65.77,418080,12351,30,30,"0","0"
 3,"US House of Representatives - District 3 - Rep (Vote For 1)","Mike Dugan","REP",17693,37.37,570648,48402,15,15,"0","12"
