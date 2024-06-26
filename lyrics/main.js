@@ -471,3 +471,4 @@ lyricVisSceneMid.on("leave", function(){
   featureVis(songData);
   songVis(songInfo);
   console.log('lyric at mid leaving');});
+
