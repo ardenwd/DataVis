@@ -12,6 +12,7 @@
 
   onMount(async () => {
     console.log(chartData);
+
     const svg = d3
       .select(chartDiv)
       .append("svg")
