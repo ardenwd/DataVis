@@ -4,7 +4,7 @@
 
 [CharliVis^](https://ardenwd.github.io/DataVis/lyrics)
 
-[NYC Taxi Cab Data Visualization^](https://ardenwd.github.io/DataVis/taxiVis)
+[ElectionVis^](https://ardenwd.github.io/DataVis/electionV0)
 
 ^_Work in Progress... but still worth a visit!_
 
