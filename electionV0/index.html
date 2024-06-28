@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Election</title>
+    <link rel="stylesheet" href="./style.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <main>
+      <h1>GA Election Results</h1>
+      <p></p>
+      <AllCharts />
+      <p class="source">
+        Source:
+        <a
+          href="https://results.enr.clarityelections.com/GA/121813/web.317647/#/summary"
+          class="source"
+        >
+          Election Night Reporting via GEORGIA SECRETARY OF STATE
+        </a>
+      </p>
+      <p class="source">Visualization by Arden Davis</p>
+    </main>
+
+    <div id="chartContainer"></div>
+  </body>
+
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <script src="./main.js"></script>
+</html>
