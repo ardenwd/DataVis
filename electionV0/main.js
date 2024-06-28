@@ -1,5 +1,5 @@
   let data;
-  const margin = { top: 10, right: 15, bottom: 20, left: 20 },
+  var margin = { top: 10, right: 15, bottom: 20, left: 20 },
     width = 300 - margin.left - margin.right,
     height = 200 - margin.top - margin.bottom;
 
@@ -8,30 +8,61 @@
 
     rawData = processChoiceName(rawData);
     // custom sort function to make winner always appear on the left
-    rawData.sort(function (a, b) {
-      return b.percent - a.percent;
-    });
+const categoryOrder = {
+    'State Senate': 4,
+    'State House of Representatives': 5,
+    'US Senate': 2,
+    'US House of Representative': 3,
+    'Judge, Superior Court':1,
+    '': 4  // Ensures any other category comes last
+};
+
+rawData.sort(function (a, b) {
+    // Get the categories for comparison
+    const categoryA = a.category1;
+    const categoryB = b.category1;
+    
+    // Compare the categories based on predefined order
+    const categoryComparison = (categoryOrder[categoryA] || categoryOrder['']) - (categoryOrder[categoryB] || categoryOrder['']);
+    
+    // If categories are the same, sort by percent
+    if (categoryComparison === 0) {
+        return b.percent - a.percent;
+    }
+    
+    // Otherwise, sort by category
+    return categoryComparison;
+});
+
+
 
     console.log(rawData);
     var byRace = d3.group(rawData, (d) => d.contest);
 
-    let chartContainer = d3.select("#chartContainer").attr("display", "flex");
+    let chartContainer = d3.select("#chartContainer");
     console.log(byRace);
 
     var raceNamesArray = d3.map(byRace, (d) => d[0]);
 
+    var prevCat;
     byRace.forEach(function (d, i) {
-      const svg = chartContainer
+      
+      // var prevCat = prevVal
+
+      if (i === 0 || d[0].category1 !== prevCat) {  chartContainer.append("h2")
+            .text(d[0].category1)
+          .style("display", "flex !important")
+            .attr("class", "category-heading");
+      }
+
+        const svg = chartContainer
         .append("svg")
         .attr("class", "chart")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .attr("margin", "20px")
-        // .attr("display", "flex")
         .append("g")
-        .attr("display", "flex")
-        .attr("flex-wrap", "wrap")
-        .attr("transform", `translate(${margin.left},${margin.top})`);
+        .attr("transform", `translate(${margin.left},${-2*margin.bottom})`);
 
       // svg
       //   .append("g")
@@ -43,14 +74,16 @@
 
       // svg.append("g").call(d3.axisLeft(y));
       const textValue = i;
+      console.log(d);
       const raceLabelText = svg.append("text");
       raceLabelText
-        .text(i)
-        .call(wrapLine, width, 0, 0, 0, 0, 0)
+        .text(d[0].category2)
         .attr("class", "race-label")
+        .attr("font-weight","500")
         .attr("transform", function () {
           return "translate(0, " + height + ")";
         });
+ 
 
       svg
         .selectAll("mybar")
@@ -63,6 +96,7 @@
           }
           return "second";
         })
+        .attr("z-index", "10")
         .attr("x", function (d, i) {
           if (i == 0) {
             return 0;
@@ -105,14 +139,18 @@
         })
         // .call(wrapLine, width, 0, 0, 0, 0, 0)
         .attr("class", "name-label")
-        .attr("font-size", "2rem")
+        .attr("z-index", 1)
+        .attr("font-family","Roboto Condensed")
+        .attr("font-size", "4rem")
+        .attr("font-style","italic")
+         .attr("font-weight", 700)
         .attr("transform", function (d, i) {
           if (i) {
             return (
-              "translate(" + (width / 2 - 30) + " , " + (height - 60) + ")"
+              "translate(" + (width / 2 - 30) + " , " + (height - 38) + ")"
             );
           }
-          return "translate(" + (width / 2 - 40) + ", " + (height - 60) + ")";
+          return "translate(" + (width / 2 - 40) + ", " + (height - 38) + ")";
         })
         .attr("class", function (d, i) {
           if (!i) {
@@ -122,11 +160,10 @@
         })
         .attr("opacity", function (d, i) {
           if (!i) {
-            return 0.4;
+            return 0.1;
           }
           return 0;
-        })
-        .attr("font-weight", 800);
+        });
       // .attr("text-anchor", function (d, i) {
       //   if (i) {
       //     return "end";
@@ -197,8 +234,20 @@
             return "end";
           }
         });
+      prevCat = d[0].category1;
+
     });
+
   });
+
+  function splitCategory(columnValue) {
+            const parts = columnValue.split(' - ');
+            return {
+                category1: parts[0] || '',
+                category2: parts[1] || '',
+                category3: parts[2] || ''
+            };
+        }
 
   function processChoiceName(data) {
     return data.map((d) => {
@@ -221,6 +270,8 @@
         firstName = names[0];
         lastName = "";
       }
+      const categories = splitCategory(d['contest']); // Replace 'column_name' with the actual column name
+
 
       return {
         ...d,
@@ -228,6 +279,9 @@
         lastName: lastName,
         firstNameLength: firstName.length,
         lastNameLength: lastName.length,
+        category1: categories.category1,
+        category2: categories.category2 + " " + categories.category3,
+        category3: categories.category3
       };
     });
   }

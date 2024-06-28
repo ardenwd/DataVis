@@ -2,6 +2,14 @@ h1 {
   font-weight: 600;
 }
 
+h2 {
+  font-size: 1.1em;
+  padding-top: 1em;
+  font-weight: 500;
+  width: 100%;
+  /* display: block; */
+}
+
 html {
   font-family: "Libre Franklin", "Franklin Gothic Medium", "Arial Narrow", Arial,
     sans-serif;
@@ -17,4 +25,9 @@ html {
   text-decoration: none;
   color: black;
   font-size: 0.8rem;
+}
+
+svg {
+  text-align: left;
+  /* float: left; */
 }
