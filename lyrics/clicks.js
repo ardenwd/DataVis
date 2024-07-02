@@ -23,11 +23,15 @@ document.addEventListener("DOMContentLoaded", function () {
     // Function to show the next item
     function showNext() {
         items[currentIndex].classList.add("hidden");
+        dotsWrapper[currentIndex].classList.remove("active");
         currentIndex += 1;
         currentIndex %=3;
         items[currentIndex].classList.remove("hidden");
+        dotsWrapper[currentIndex].classList.add("active");
         items[currentIndex].addEventListener("click", showNext);
         items[currentIndex].addEventListener("touchend", showNext);
+
+        
       
     }
 
