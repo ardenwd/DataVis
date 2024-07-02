@@ -171,6 +171,33 @@ p.smaller {
   max-height: 70%;
   border: 0 50px 0 50px;
   margin: auto;
+  margin-top: 0;
+}
+
+.dots-wrapper {
+  align-items: center;
+  justify-content: center;
+  height: 5px;
+  display: flex;
+  margin: auto;
+  margin-bottom: 5px;
+  margin-top: 0;
+}
+
+.gallery-dot {
+  border-radius: 5px;
+  border: 0.5px solid #b3b3b3;
+  background-color: #181818;
+}
+
+.dots-wrapper .gallery-dot {
+  flex: 1;
+  height: 100%;
+  margin: 1px;
+}
+
+.dots-wrapper .gallery-dot.active {
+  background-color: #b3b3b3;
 }
 
 .gallery-img {
@@ -250,6 +277,11 @@ p.smaller {
     font-size: 30px;
   }
 }
+@media (max-width: 1000px) {
+  .dots-wrapper {
+    display: flex;
+  }
+}
 
 @media (min-width: 1000px) {
   html {
@@ -261,6 +293,9 @@ p.smaller {
   }
   .gallery-img {
     display: block !important;
+  }
+  .dots-wrapper {
+    display: none;
   }
 }
 

@@ -1,15 +1,23 @@
 document.addEventListener("DOMContentLoaded", function () {
   function setupGallery(galleryId) {
     const items = document.querySelectorAll(`#${galleryId} .gallery-img`);
+    container = items[0];
+    const dotsWrapper = document.querySelectorAll(`#${galleryId} .gallery-dot`);
+
     let currentIndex = 0;
 
     // Initially show only the first item
     items.forEach((item, index) => {
       if (index !== currentIndex) {
         item.classList.add("hidden");
+        dotsWrapper[index].classList.remove("active");
       } else {
         item.classList.remove("hidden");
+        dotsWrapper[index].classList.add("active");
       }
+
+      //same index of the dots array
+      //filled or empty
     });
 
     // Function to show the next item
@@ -28,7 +36,31 @@ document.addEventListener("DOMContentLoaded", function () {
     items[currentIndex].addEventListener("touchend", showNext);
   }
 
-  // Set up both galleries
+  function updateSize() {  
+    const dotContainer = document.querySelectorAll('.dots-wrapper');
+    const img = document.querySelector('.gallery-img');
+
+    console.log(img.width);
+
+    dotContainer.forEach((cont, index) => {
+      const width = img.offsetWidth;
+      dotContainer[index].style.width = width + 'px';
+    });
+
+    // const items = document.querySelectorAll(`.gallery-img`);
+    // container = items[0];
+    // const dotsWrapper = document.querySelectorAll(`#dots-wrapper`);
+    // console.log(dotsWrapper);
+    // dotsWrapper.style.width = container.width  + 'px';
+  }
+
+
+  // Set up both galleries and fix sizes
   setupGallery("gallery1");
   setupGallery("gallery2");
+  updateSize();
+
+  
+  window.addEventListener('resize', updateSize);
+
 });
