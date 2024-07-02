@@ -1,5 +1,6 @@
 html {
   font-size: 24px;
+  font-family: authentic;
 }
 
 a {
@@ -19,7 +20,7 @@ svg {
 body {
   background-color: #181818;
   color: #f0f0f0;
-  font-family: garamond;
+  /* font-family: garamond; */
   /* turn on for info graph vis */
   /* display: flex; */
 }
@@ -257,6 +258,10 @@ p.smaller {
 .text-image-section {
   display: flex;
   flex-direction: column;
+}
+
+.credits {
+  font-size: 0.5em;
 }
 
 @media (orientation: landscape) {
