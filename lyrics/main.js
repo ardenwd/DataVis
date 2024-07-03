@@ -10,12 +10,10 @@ var list = [];
 var data;
 
 var lyricDataset;
-var sideInfo = d3.select("#vis")
-    .append("div")
-    .attr("id","info");
 
+var visContainer = document.getElementById("vis");
 // var width = +svg.attr('width');
-var width = window.innerWidth-250, height = window.innerHeight-350, sizeDivisor = 100, nodePadding = 1.5;
+var width = visContainer.width, height = visContainer.height, sizeDivisor = 100, nodePadding = 1.5;
 
 var nodes = [{},{},{}];
 
@@ -37,6 +35,8 @@ var nameText = vis.append('text')
     .attr("class","nameText")
     .text("");
 
+
+//example of how to do mouseover    
 // Three function that changes the tooltip when user hovers / moves / leaves a cell
 var mouseover = function(d) {
   d=d.target.__data__;
@@ -108,12 +108,8 @@ var artists = [];
     var fIndex = 0;
     //go in to each artist
     d.song.featured_artists.forEach((d)=>{
-      // artists.push({artist: d.name, title})
-      // console.log(d);
-
       //add all the artists to an array
       index = temp.indexOf(d.name);
-      
       if( index == -1){
       temp.push(d.name);
     }
@@ -126,8 +122,6 @@ var artists = [];
       fIndex++;
     }
     );
-console.log(songData);
-    
 
     songInfo.push({name: d.song.title,
     features: d.song.featured_artists}
@@ -136,9 +130,7 @@ console.log(songData);
     features=songInfo[i].features;
     features.forEach((d) => {featuresBySong.push(d.name);});
     songInfo[i].features=featuresBySong;
-    // console.log(features);
   });
-
 }
 
 function lyricVis(dataset){
@@ -159,15 +151,12 @@ function lyricVis(dataset){
         .enter().append("circle")
           .attr("class","circles")
           .attr("r", function(d) { return d.radius; })
-          
           .attr("cx", function(d){ return d.x; })
           .attr("cy", function(d){ return d.y; })
           .attr("z-index",1)
           .on("mouseover", mouseover)
           .on("mousemove", mousemove)
           .on("mouseleave", mouseleave)
-          // .transition()
-          // .duration(1500)
           .attr("fill", function(d) { return colors(d.Song); });
 }
 
@@ -177,7 +166,6 @@ function removeFeatures(){
   .duration(1500)
       .attr("x", function(d,i){ return d.num * 30; })
       .attr("y", function(d,i){ return height - 170; })
-      // .attr("opacity",0)
       .remove();
 }
 
@@ -190,27 +178,10 @@ function removeSongs(){
 }
 
 function removeLyrics(){
- 
   vis.selectAll('circle').transition().duration(400)
     .attr('opacity',0).
     remove();
 }
-
-function removeInfo(){
-  sideInfo
-    .transition()
-    .duration(600)
-    .style("opacity",0);
-}
-
-function showInfo(){
-  sideInfo
-    .transition()
-    .duration(600)
-    .style("opacity",1);
-}
-
-
 
 function songVis(data){
   
@@ -222,8 +193,46 @@ function songVis(data){
     dots.enter()
       .append('rect')
       .attr("class","bySong")
+      .attr("width", 15)
+      .attr("height", 15)
+      .attr("fill", function(d,i){ 
+        return colorScale[i];})
+      .attr("y", function(d,i){ return i *20; })
+      .attr("x", function(d,i){ return height - 170; })
+      .attr("opacity", " 0.8");
+
+    //make the dots appear slowly
+    dotsEnter
+      .attr("opacity","0")
+      .transition()
+      .duration(1200)
+      .attr("opacity","0.6");
+
+      dotsEnter
+          .on("mouseover", function(event,d){
+            var[x,y] = d3.pointer(event);
+            nameText.text(d.name)
+            .style("fill", "#f1ede9")
+            .attr("x",x + 20 )
+            .attr("y", (y +20));
+          })
+          // .on("mousemove", mousemove)
+           .on("mouseleave", function(){
+            nameText.text(" ");
+           });
+}
+
+function songVisOld(data){
+  
+  var dots = vis.append("g")
+      .attr("class", "node")
+      .selectAll("rect").data(data);
+
+  var dotsEnter = 
+    dots.enter()
+      .append('rect')
+      .attr("class","bySong")
       .attr("width", 20)
-      // .attr("height",  function(d){ return d.features.length * 20 + 20;})
       .attr("height", 20)
       .attr("fill", function(d,i){ 
         return colorScale[i];})
@@ -249,8 +258,6 @@ function songVis(data){
            .on("mouseleave", function(){
             nameText.text(" ");
            });
-  //one round circle of all the songs
-  //function that lists all the points on a circle
 }
 
 function featureVis(data){
@@ -294,34 +301,12 @@ var dots = vis.append("g")
            });
 }
 
+/*Set up scroller
+*
+*   YAY!
+*/
 
 var controller = new ScrollMagic.Controller();
-
-
-// //add the first scene to the controller
-// var startScene = new ScrollMagic.Scene({
-//   triggerElement: '#hide-vis',
-//   // duration: 300
-// })
-// .addTo(controller); // Add Scene to ScrollMagic Controller
-
-// //hide the vis when this point is approached
-// startScene.on("enter", function(){
-//   //here is where you call the relevant viz function
-//   //make svg opacity 0
-//   console.log('hi');
-//     document.getElementById("vis").style.visibility = "visible"; 
-// });
-
-// //hide the vis when this point is approached
-// startScene.on("leave", function(){
-//   //here is where you call the relevant viz function
-//   //make svg opacity 0
-//   console.log('hi');
-//     document.getElementById("vis").style.visibility = "hidden"; 
-// });
-
-
 
 
 //songVis is the name of the vis
@@ -334,19 +319,12 @@ var songVisScene = new ScrollMagic.Scene({
 .addTo(controller); // Add Scene to ScrollMagic Controller
 
 songVisScene.on("enter", function(){
-  //here is where you call the relevant viz function
   console.log('song at top');
   removeFeatures();
-  showInfo();
-  //make info opacity 1
-  
-  sideInfo.html("<p class=\"info-text\">Hover over a square to see the song</p>");
-});
+  });
 
 
 songVisScene.on("leave", function(){
-  //here is where you call the relevant viz function
-  removeInfo();
   console.log('song at top leaving');
 });
 
@@ -359,26 +337,18 @@ var songVisSceneMid = new ScrollMagic.Scene({
 .addTo(controller); // Add Scene to ScrollMagic Controller
 
 songVisSceneMid.on("enter", function(){
-  //here is where you call the relevant viz function
   console.log('song at mid');
   // document.getElementById("vis").style.visibility = "visible"; 
     vis.attr("opacity","0") 
     .transition()
     .duration(1000)
     .attr("opacity","1.0") ;
-  songVis(songInfo);
-      // sideInfo.html("<p class=\"info-text\">Hover over a square to see the song</p>");
-});
+  songVis(songInfo);});
 
 songVisSceneMid.on("leave", function(){
-  //here is where you call the relevant viz function
   removeSongs();
   console.log('song at mid exit');
-  
-  // document.getElementById("vis").style.visibility = "hidden"; 
-  // songVis(songInfo);
-      // sideInfo.html("<p class=\"info-text\">Hover over a square to see the song</p>");
-});
+  });
 
 
   //featureVis
@@ -393,14 +363,10 @@ var featureVisScene = new ScrollMagic.Scene({
 .addTo(controller); // Add Scene to ScrollMagic Controller
 
 featureVisScene.on("enter", function(){
-  //here is where you call the relevant viz function
-    sideInfo.html("<p class=\"info-text\">Hover over a square to see the artist</p>");
-    showInfo();
-
+  
   console.log('feature at top');});
 
   featureVisScene.on("leave", function(){
-    removeInfo();
     console.log('feature at top leaving');
   });
 
@@ -415,13 +381,11 @@ var featureVisSceneMid = new ScrollMagic.Scene({
 .addTo(controller); // Add Scene to ScrollMagic Controller
 
 featureVisSceneMid.on("enter", function(){
-  //here is where you call the relevant viz function
   featureVis(songData);
   console.log('feature at mid');});
 
 
 featureVisSceneMid.on("leave", function(){
-  //here is where you call the relevant viz function
   //make the artists disappear
 
   console.log('feature at mid leaving');});
@@ -438,13 +402,10 @@ var lyricVisScene = new ScrollMagic.Scene({
 .addTo(controller); // Add Scene to ScrollMagic Controller
 
 lyricVisScene.on("enter", function(){
-  //here is where you call the relevant viz function
-    showInfo();
 
   console.log('lyric at top');});
 
     lyricVisScene.on("leave", function(){
-    removeInfo();
     console.log('lyric at top leaving');
   });
 
@@ -460,12 +421,11 @@ lyricVisSceneMid.on("enter", function(){
   //make the squares disappear
   removeFeatures();
   removeSongs();
-  lyricVis(lyricDataset);
+  // lyricVis(lyricDataset);
   console.log('lyric at mid');});
 
 
 lyricVisSceneMid.on("leave", function(){
-  //here is where you call the relevant viz function
   //make the artists disappear
   
   featureVis(songData);
