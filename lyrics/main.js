@@ -12,23 +12,32 @@ var data;
 var lyricDataset;
 
 var visContainer = document.getElementById("vis");
-// var width = +svg.attr('width');
-var width = visContainer.width, height = visContainer.height, sizeDivisor = 100, nodePadding = 1.5;
-
+var sizeDivisor = 100, nodePadding = 1.5;
 var nodes = [{},{},{}];
+var padding = {t: 40, r: 40, b: 40, l: 40};
+//square size
+var s = 17;
+var sSpacing = 1.25;
+var leftAlign = 0;
+
+
+
 
 var svg = d3.select("#vis")
     .append("svg")
     .attr("id","svg")
-    // .attr("width", width)
-     .attr("height", height);
-     width = document.getElementById("svg").clientWidth;
+     .attr("viewBox", "0 0 400 400");
+     var width = (document.getElementById("svg").clientWidth);
+     var height = (document.getElementById("svg").clientWidth );
 
 
-var padding = {t: 40, r: 40, b: 40, l: 40};
+    svg.attr("height", height)
+      .attr("width", width);
 
-var vis = svg.append('g')
-    .attr('transform', 'translate('+[padding.l,padding.t]+')');
+var middleIsh  = width/2 + 10;
+
+var vis = svg.append('g');
+    // .attr('transform', 'translate('+[padding.l,padding.t]+')');
 // create a tooltip
 
 var nameText = vis.append('text')
@@ -134,6 +143,7 @@ var artists = [];
 }
 
 function lyricVis(dataset){
+  console.log("lyricVis");
 
     graph = dataset;
     simulation.nodes(graph)
@@ -161,16 +171,20 @@ function lyricVis(dataset){
 }
 
 function removeFeatures(){
-    vis.selectAll('.byArtist')
-  .transition()
-  .duration(1500)
-      .attr("x", function(d,i){ return d.num * 30; })
-      .attr("y", function(d,i){ return height - 170; })
+  console.log("removeFeatures");
+
+    vis.selectAll('.by-artist').attr("y", function(d,i){ return d.num * ( s * sSpacing); })
+      .attr("x", function(d,i){ return middleIsh  - (s/2) +(d.featureNum * (s * sSpacing) + (s * sSpacing)) - s*2; })
+      .transition()
+      .duration(1200)
+      .attr("y", function(d,i){ return d.num * ( s * sSpacing); })
+      .attr("x", function(d,i){ return middleIsh  - (s/2) -  s*2 ; })
       .remove();
 }
 
 function removeSongs(){
-    vis.selectAll('.bySong')
+  console.log("removeSongs");
+    vis.selectAll('.by-song')
       .transition()
       .duration(1500)
       .attr("opacity",0)
@@ -178,13 +192,54 @@ function removeSongs(){
 }
 
 function removeLyrics(){
+  console.log("removeLyrics");
   vis.selectAll('circle').transition().duration(400)
     .attr('opacity',0).
     remove();
 }
 
-function songVis(data){
+function songNameVis(data){
+  console.log("songNameVis");
+  var dots = vis.append("g")
+      .attr("class", "node")
+      .selectAll("rect").data(data);
+
+  var dotsEnter = 
+    dots.enter()
+      .append('text')
+      .text(function(d,i ) {return i+1 + ". " + d.name;})
+      .attr("class","song-name")
+      .attr("fill", function(d,i){ 
+        return "#f0f0f0";})
+        //position in center (x)
+      .attr("y", function(d,i){  return i * (sSpacing * s) + 17; })
+      .attr("x", function(d,i){ return leftAlign})
+      .attr("opacity", "0")
+      .transition().duration(500)
+        .attr("opacity", "1");
+
+}
+
+function makeNamesColored(){
+  console.log("makeNamesColored");
+  var names = vis.selectAll(".song-name");
   
+  names.attr("background-color", function(d,i){ 
+        return hexToRgbOpacity(colorScale[i],0.7);});
+}
+
+function removeNames(){
+  console.log("removeNames");
+  var names = vis.selectAll(".song-name");
+  
+  names.transition().duration(500)
+        .attr("opacity", "0");
+}
+
+
+function songVis(data){
+  console.log("songVis");
+
   var dots = vis.append("g")
       .attr("class", "node")
       .selectAll("rect").data(data);
@@ -192,14 +247,15 @@ function songVis(data){
   var dotsEnter = 
     dots.enter()
       .append('rect')
-      .attr("class","bySong")
-      .attr("width", 15)
-      .attr("height", 15)
-      .attr("fill", function(d,i){ 
+      .attr("class","by-song")
+      .attr("width", s)
+      .attr("height", s)
+      .attr("fill", "none")
+      .attr("stroke", function(d,i){ 
         return colorScale[i];})
-      .attr("y", function(d,i){ return i *20; })
-      .attr("x", function(d,i){ return height - 170; })
-      .attr("opacity", " 0.8");
+        //position in center (x)
+      .attr("y", function(d,i){  return i * (sSpacing* s) ; })
+      .attr("x", function(d,i){ return middleIsh  - (s/2) -  s*2 ; });
 
     //make the dots appear slowly
     dotsEnter
@@ -208,59 +264,10 @@ function songVis(data){
       .duration(1200)
       .attr("opacity","0.6");
 
-      dotsEnter
-          .on("mouseover", function(event,d){
-            var[x,y] = d3.pointer(event);
-            nameText.text(d.name)
-            .style("fill", "#f1ede9")
-            .attr("x",x + 20 )
-            .attr("y", (y +20));
-          })
-          // .on("mousemove", mousemove)
-           .on("mouseleave", function(){
-            nameText.text(" ");
-           });
-}
-
-function songVisOld(data){
-  
-  var dots = vis.append("g")
-      .attr("class", "node")
-      .selectAll("rect").data(data);
-
-  var dotsEnter = 
-    dots.enter()
-      .append('rect')
-      .attr("class","bySong")
-      .attr("width", 20)
-      .attr("height", 20)
-      .attr("fill", function(d,i){ 
-        return colorScale[i];})
-      .attr("x", function(d,i){ return i *30; })
-      .attr("y", function(d,i){ return height - 170; });
-
-    //make the dots appear slowly
-    dotsEnter
-      .attr("opacity","0")
-      .transition()
-      .duration(1200)
-      .attr("opacity","1.0");
-
-      dotsEnter
-          .on("mouseover", function(event,d){
-            var[x,y] = d3.pointer(event);
-            nameText.text(d.name)
-            .style("fill", "#f1ede9")
-            .attr("x",x - 20 )
-            .attr("y", (y - 20));
-          })
-          // .on("mousemove", mousemove)
-           .on("mouseleave", function(){
-            nameText.text(" ");
-           });
 }
 
 function featureVis(data){
+  console.log("featureVis");
   //scatter plot of the song x artists (x,y), charli as 1, 2 is the next, 3 troye, etc
 removeLyrics();
  
@@ -272,28 +279,29 @@ var dots = vis.append("g")
   var dotsEnter = dots
       .enter()
       .append('rect') 
-      .attr("class","byArtist")
-      .attr("width", 20)
-      .attr("height",  20)
+      .attr("class","by-artist")
+      .attr("width", s)
+      .attr("height",  s)
       .attr("fill", function(d,i){ 
         return colorScale[d.num];})
-      .attr("x", function(d,i){ return d.num * 30; })
-      .attr("y", function(d,i){ return height - 170; });
+
+          .attr("y", function(d,i){ return d.num * ( s * sSpacing); })
+          .attr("x", function(d,i){ return middleIsh  - (s/2) -  s*2 ; });
       dotsEnter
       .transition()
       .duration(1200)
-          .attr("x", function(d,i){ return d.num * 30; })
-          .attr("y", function(d,i){ return height - 200 - d.featureNum * 30 ; });
+          .attr("y", function(d,i){ return d.num * ( s * sSpacing); })
+          .attr("x", function(d,i){ return middleIsh  - (s/2) +(d.featureNum * (s * sSpacing) + (s * sSpacing)) - s*2; });
           // .attr("z-index",1
           
       dotsEnter
-          .on("mouseover", function(event,d){
+          .on("mouseover", function(event,d,i){
             var[x,y] = d3.pointer(event);
             
             nameText.text(d.artist)
             .style("fill", "#f1ede9")
-            .attr("x",x -30)
-            .attr("y",y - 50);
+            .attr("y", (d.num + 1) * s * sSpacing)
+            .attr("x", function(d,i){ return middleIsh + (s * sSpacing * 4); });
           })
           // .on("mousemove", mousemove)
            .on("mouseleave", function(){
@@ -326,6 +334,8 @@ songVisScene.on("enter", function(){
 
 songVisScene.on("leave", function(){
   console.log('song at top leaving');
+  //push squares to the middle and fade text
+
 });
 
 //songVis is the name of the vis
@@ -338,15 +348,15 @@ var songVisSceneMid = new ScrollMagic.Scene({
 
 songVisSceneMid.on("enter", function(){
   console.log('song at mid');
-  // document.getElementById("vis").style.visibility = "visible"; 
-    vis.attr("opacity","0") 
-    .transition()
-    .duration(1000)
-    .attr("opacity","1.0") ;
-  songVis(songInfo);});
+  //make names appear
+  vis.attr("opacity", "1");
+  songNameVis(songInfo);
+  songVis(songInfo);
+});
 
 songVisSceneMid.on("leave", function(){
   removeSongs();
+  vis.attr("opacity", "0");
   console.log('song at mid exit');
   });
 
@@ -421,6 +431,7 @@ lyricVisSceneMid.on("enter", function(){
   //make the squares disappear
   removeFeatures();
   removeSongs();
+  removeNames();
   // lyricVis(lyricDataset);
   console.log('lyric at mid');});
 
@@ -431,4 +442,3 @@ lyricVisSceneMid.on("leave", function(){
   featureVis(songData);
   songVis(songInfo);
   console.log('lyric at mid leaving');});
-
