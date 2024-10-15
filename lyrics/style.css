@@ -9,7 +9,7 @@ a {
 }
 
 body {
-  background-color: #181818;
+  background-color: #333333;
   color: #f0f0f0;
   /* font-family: garamond; */
   /* turn on for info graph vis */
@@ -17,7 +17,7 @@ body {
 }
 
 .body-text {
-  background-color: #4d4d4d;
+  background-color: #606060;
   border-radius: 0.5em;
   padding: 0.5em;
   z-index: 10;
@@ -38,18 +38,28 @@ body {
 }
 
 svg {
-  width: 100%;
-  height: 100%;
+  display: block;
+  margin: auto;
+  width: 700px;
+  height: 500px;
+  text-align: center;
 }
 
 .song-name {
   font-weight: lighter;
-  font-family: Montserrat;
+  font-family: monospace;
   font-size: 0.5em;
-  color: #f0f0f0;
+  color: #bababa;
   /* opacity: 1; */
 }
 
+.durationToolTipText {
+  font-weight: normal;
+  font-family: monospace;
+  font-size: 0.46em;
+  color: #111;
+  /* opacity: 1; */
+}
 .tooltip {
   /* flex: 1; */
   width: fit-content;
@@ -79,12 +89,12 @@ circle {
 
 .intro-text {
   color: #f0f0f0;
-  font-family: garamond;
+  font-family: monospace;
 }
 
 p {
   color: #f0f0f0;
-  font-family: garamond;
+  font-family: monospace;
   text-align: center;
 }
 
@@ -226,6 +236,24 @@ p.smaller {
   display: none;
 }
 
+.album-cover {
+  display: block;
+  margin: auto;
+  text-align: center;
+  width: 350px;
+  height: 350px;
+}
+
+#charli-cover {
+  opacity: 1;
+  transition: opacity 0.35s;
+  z-index: 3;
+}
+
+#charli-cover.fade {
+  opacity: 0;
+}
+
 .nameText {
   background-color: red;
   color: bisque;
@@ -247,6 +275,10 @@ p.smaller {
 
 .section {
   height: 100vh;
+}
+
+.shorter {
+  /* height: 50vh; */
 }
 
 .text-image-section {

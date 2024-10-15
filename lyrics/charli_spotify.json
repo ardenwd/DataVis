@@ -1,0 +1,107 @@
+[
+    {
+        "uri":"spotify:track:7a6HVxpLhW7hRL9JcFZl16",
+        "track":"Next Level Charli",
+        "duration_ms":157626,
+        "explicit":false,
+        "track_number":1
+    },
+    {
+        "uri":"spotify:track:1yUJK3qxPiFiPeAG2gLfuW",
+        "track":"Gone",
+        "duration_ms":246480,
+        "explicit":true,
+        "track_number":2
+    },
+    {
+        "uri":"spotify:track:15IgHEkeO9gSqrKilaEh8b",
+        "track":"Cross You Out (feat. Sky Ferreira)",
+        "duration_ms":208386,
+        "explicit":false,
+        "track_number":3
+    },
+    {
+        "uri":"spotify:track:3WGJSY8JaGliVIJyMig5aS",
+        "track":"1999",
+        "duration_ms":189200,
+        "explicit":false,
+        "track_number":4
+    },
+    {
+        "uri":"spotify:track:3B0K8G7WESjdKxQvVMByR9",
+        "track":"Click (feat. Kim Petras and Tommy Cash)",
+        "duration_ms":233293,
+        "explicit":true,
+        "track_number":5
+    },
+    {
+        "uri":"spotify:track:2xHEAdEalJ5YcP0ur8kF6L",
+        "track":"Warm (feat. HAIM)",
+        "duration_ms":225266,
+        "explicit":false,
+        "track_number":6
+    },
+    {
+        "uri":"spotify:track:7A32ilnCkeWlDNM0xsBUfw",
+        "track":"Thoughts",
+        "duration_ms":191053,
+        "explicit":true,
+        "track_number":7
+    },
+    {
+        "uri":"spotify:track:2RCUr24WkEe2r5Vv4oDKlN",
+        "track":"Blame It on Your Love (feat. Lizzo)",
+        "duration_ms":191506,
+        "explicit":true,
+        "track_number":8
+    },
+    {
+        "uri":"spotify:track:7fOFeVSyL18q7RiU6cnhiM",
+        "track":"White Mercedes",
+        "duration_ms":203133,
+        "explicit":false,
+        "track_number":9
+    },
+    {
+        "uri":"spotify:track:25x38hVatSDa5ptfbKwdn5",
+        "track":"Silver Cross",
+        "duration_ms":208453,
+        "explicit":false,
+        "track_number":10
+    },
+    {
+        "uri":"spotify:track:2wsypbBdFwN1woTAh9sq6X",
+        "track":"I Don't Wanna Know",
+        "duration_ms":185013,
+        "explicit":false,
+        "track_number":11
+    },
+    {
+        "uri":"spotify:track:38ybr0LS9XLUcqg8Yo62Wj",
+        "track":"Official",
+        "duration_ms":184746,
+        "explicit":false,
+        "track_number":12
+    },
+    {
+        "uri":"spotify:track:3XbNseJrIK8LzoTh4eA0Xf",
+        "track":"Shake It (feat. Big Freedia, CupcakKe, Brooke Candy and Pabllo Vittar)",
+        "duration_ms":275040,
+        "explicit":true,
+        "track_number":13
+    },
+    {
+        "uri":"spotify:track:3fTEcn7Jt6Dq3NVVdNvl4w",
+        "track":"February 2017 (feat. Clairo and Yaeji)",
+        "duration_ms":153093,
+        "explicit":false,
+        "track_number":14
+    },
+    {
+        "uri":"spotify:track:2T4SAwloHxRAtpD2hgykdA",
+        "track":"2099 (feat. Troye Sivan)",
+        "duration_ms":205213,
+        "explicit":true,
+        "track_number":15
+    }
+]

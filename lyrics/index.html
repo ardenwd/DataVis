@@ -9,9 +9,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.2/TweenMax.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.5/ScrollMagic.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.5/plugins/animation.gsap.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <div id="main">
@@ -25,61 +28,74 @@
           </div>
           <div class="byline">
             <p class="byline">An album visualization</p>
-            <p class="smaller byline"><a href>by Arden Davis</a></p>
+            <p class="smaller byline"><a href="">by Arden Davis</a></p>
             <!-- <iframe style="border-radius:12px" src="https://open.spotify.com/embed/album/386IqvSuljaZsMjwDGGdLj?utm_source=generator"  frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
                     </div> -->
           </div>
         </div>
       </div>
+
       <div id="intro1" class="text-image-section section">
-        <p class="body-text"id="text1">
+        <p class="body-text" id="text1">
           For the past few years Charli XCX has been one of my top artists.
         </p>
+
         <div class="dots-wrapper" id="gallery1">
-            <div class="gallery-dot active"></div>
-            <div class="gallery-dot"></div>
-            <div class="gallery-dot"></div>
+          <div class="gallery-dot active"></div>
+          <div class="gallery-dot"></div>
+          <div class="gallery-dot"></div>
         </div>
-        <div id="gallery1" class="img-wrapper" >
+
+        <div id="gallery1" class="img-wrapper">
           <img class="gallery-img" src="./img/spotify-2.jpg" />
           <img class="gallery-img" src="./img/spotify-3.jpg" />
           <img class="gallery-img" src="./img/spotify-2.jpg" />
         </div>
-    
       </div>
+
       <div id="intro2" class="text-image-section section">
-        <p class="body-text"id="text2">
+        <p class="body-text" id="text2">
           Growing up, I listened to Nashville's pop radio and didn't realize at
           13 that the songs I loved were hers.
         </p>
         <div class="dots-wrapper" id="gallery2">
-            <div class="gallery-dot active"></div>
-            <div class="gallery-dot"></div>
-            <div class="gallery-dot"></div>
+          <div class="gallery-dot active"></div>
+          <div class="gallery-dot"></div>
+          <div class="gallery-dot"></div>
         </div>
-        <div id="gallery2" class ="img-wrapper" >
+        <div id="gallery2" class="img-wrapper">
           <img class="gallery-img" id="boomclap" src="./img/music-1.jpg" />
-          <img class="gallery-img" src="./img/radio.jpg"/>
+          <img class="gallery-img" src="./img/radio.jpg" />
           <img class="gallery-img" src="./img/music-2.jpg" />
         </div>
       </div>
 
-      <div id="intro3" class="text-image-section section">
-        <p class="body-text"id="text3">
+      <div id="intro3" class="text-image-section section shorter">
+        <p class="body-text" id="text3">
           When I was introduced to Charli's self-titled album I was hooked.
         </p>
-        <div id="gallery3" class ="img-wrapper" >
-        <img class="gallery-img" src="./img/charli-brat.png"/>
+        <div class="">
+          <img
+            id="charli-cover"
+            class="album-cover"
+            src="./img/charli-brat.png"
+          />
         </div>
       </div>
-      <div  class="section">
-       <p class="body-text"id="songNameText" >Let's explore what this album is made of.</p></div>
+      <div id="split-cover" class="section shorter">
+        <p class="body-text" id="songNameText">
+          Let's explore what this album is made of.
+        </p>
+      </div>
       <div class="vis-container" id="vis"></div>
       <div id="songVis" class="section">
-        <p class="body-text"id="songText">There are 15 songs on the album.</p>
+        <p class="body-text" id="songText">There are 15 songs on the album.</p>
+      </div>
+      <div id="lengthVis" class="section">
+        <p class="body-text" id="lengthText">Song length</p>
       </div>
       <div id="featureVis" class="section">
-        <p class="body-text"id="featureText">
+        <p class="body-text" id="featureText">
           Some songs have artists featured, while others do not.
         </p>
       </div>
@@ -88,10 +104,11 @@
       </div>
       <div id="break"></div>
       <p class = "credits"> Font Credit: https://www.deviantart.com/heybribz/art/CHARLI-ALBUM-FONT-813317186</p>
-  -->
+    --></div>
   </body>
+
   <script src="https://d3js.org/d3.v6.min.js"></script>
-    <script src="./clicks.js"></script>
+  <script src="./clicks.js"></script>
   <script src="./main.js"></script>
   <!-- <script src ="./intro.js"></script> -->
   <script src="./d3-tip.js"></script>

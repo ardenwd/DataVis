@@ -3,11 +3,17 @@ var colorScale = ["#1e6cc0", "#5a6cc4", "#806bc3", "#a069bf", "#bb68b8", "#d268a
 
 var colors = d3.scaleOrdinal(["#1e6cc0", "#5a6cc4", "#806bc3", "#a069bf", "#bb68b8", "#d268af", "#e56aa3", "#f46f96",
                 "#ff7a85", "#ff8a73", "#ff9d63", "#ffb356", "#fdc950", "#ebdf56", "#d2f468"]);
+
+var pastelColors = ["#4B89CD", "#7B89D0", "#9989CF", "#C48BE5", "#C986C6", "#DB86BF", "#EA88B5", "#EC88A6", "#FF959D", "#FFA18F", "#FFB182", "#FFC278", "#FFD97E", "#EFE578", "#DBF686"];
 var songInfo = [];
 var songData = [];
 var wordTotals = [];
 var list = [];
 var data;
+var spotify_data;
+var max_duration = 0;
+var durationScale;
+var songNameBars;
 
 var lyricDataset;
 
@@ -21,18 +27,22 @@ var sSpacing = 1.25;
 var leftAlign = 0;
 
 
-
-
 var svg = d3.select("#vis")
     .append("svg")
     .attr("id","svg")
-     .attr("viewBox", "0 0 400 400");
-     var width = (document.getElementById("svg").clientWidth);
-     var height = (document.getElementById("svg").clientWidth );
+     .attr("viewBox", "0 0 700 500");
+     var width = 700;
+    //  (document.getElementById("svg").clientWidth);
+     var height = 500;
+    //  (document.getElementById("svg").clientWidth );
 
 
     svg.attr("height", height)
       .attr("width", width);
+
+
+// svg.append('img').attr("href", "img/charli-brat.png");
+
 
 var middleIsh  = width/2 + 10;
 
@@ -41,8 +51,22 @@ var vis = svg.append('g');
 // create a tooltip
 
 var nameText = vis.append('text')
-    .attr("class","nameText")
-    .text("");
+  .attr("class","nameText")
+  .text("");
+
+var durationToolTip = svg.append('g').attr("opacity",0);
+
+var durationToolTipRect = durationToolTip.append('rect')
+  .attr("class","durationToolTip")
+  .attr("fill", "#fff")
+  .attr("width", 40)
+  .attr("height", 20);
+  //fill,height,width,stroke;
+
+var durationToolTipText = durationToolTip.append('text')
+  .attr("class","durationToolTipText")
+  .attr("z-index", 4)
+  .text("");
 
 
 //example of how to do mouseover    
@@ -69,6 +93,8 @@ var mouseleave = function(d) {
       
 }
 
+
+
 var simulation = d3.forceSimulation(nodes)
         .force("forceX", d3.forceX().strength(.1).x(width * .4))
         .force("forceY", d3.forceY().strength(.1).y(height * .5))
@@ -83,11 +109,41 @@ d3.csv('charli.csv', dataPreprocessor).then(function(dataset) {
   //load the json file
   d3.json('Lyrics_Charli.json').then(function(data){
     list = data.tracks;
+    console.log(list);
     dataPreprocessorSongs(list);
   });
 });
 
+ //load spotify file
+  d3.json('charli_spotify.json').then(function(values){
+    spotify_data = processSpotifyData(values);
+  });
 
+function processSpotifyData(data){
+  max_duration = 0;
+  //compute duration in seconds
+  data.forEach((d,i) => {
+    const duration = d.duration_ms;
+    data[i].duration = convertMsToMinutesSeconds(duration);
+    if(duration > max_duration) {max_duration = duration};
+  });
+
+  // make some scales
+durationScale = d3.scaleLinear([0, max_duration],[0, 390]);  // The range is the visual space (in pixels)
+
+  return data;
+}
+function convertMsToMinutesSeconds(ms) {
+    // Convert milliseconds to total seconds
+    let totalSeconds = Math.floor(ms / 1000);
+    
+    // Calculate minutes and seconds
+    let minutes = Math.floor(totalSeconds / 60);
+    let seconds = totalSeconds % 60;
+    
+    // Return the result as a string in "mm:ss" format, with leading zeros if needed
+    return minutes + ":" + (seconds < 10 ? "0" + seconds : seconds);
+}
 
 // Recall that when data is loaded into memory, numbers are loaded as Strings
 // This function converts numbers into Strings during data preprocessing
@@ -101,6 +157,7 @@ function dataPreprocessor(row) {
 }
 
 function dataPreprocessorSongs(data){
+  console.log(data);
 //make an array with the song name, list of artists, popularity
 //go through each song
 var features = [];
@@ -141,6 +198,10 @@ var artists = [];
     songInfo[i].features=featuresBySong;
   });
 }
+
+
+
+
 
 function lyricVis(dataset){
   console.log("lyricVis");
@@ -210,7 +271,7 @@ function songNameVis(data){
       .text(function(d,i ) {return i+1 + ". " + d.name;})
       .attr("class","song-name")
       .attr("fill", function(d,i){ 
-        return "#f0f0f0";})
+        return "#333333";})
         //position in center (x)
       .attr("y", function(d,i){  return i * (sSpacing * s) + 17; })
       .attr("x", function(d,i){ return leftAlign})
@@ -309,12 +370,225 @@ var dots = vis.append("g")
            });
 }
 
+
+function makeBars(data){
+  //make 13 divs and have the fill of each be img shifted a different percentage
+  songNameBars = svg.append("g")
+      .attr("class", "songsGroup")
+      .selectAll('rect')
+      .data(data);
+
+  console.log(data);
+  var barsEnter = songNameBars
+  .enter()
+  .append('rect') 
+  .attr("class","songs")
+  .attr("width", "350")
+  .attr("height", 350/15)
+  .attr("fill", "#333333")
+  // .attr("opacity", "0.5")
+  .attr("y", function(d,i){ return (350/15 *i + 1)})
+  .attr("x", 175);
+
+}
+
+function splitCover(){
+  svg.selectAll('.songs')
+    .transition()
+    .duration(1000)
+    .attr("height", 350/(17.5))
+    .attr("ry", 10)
+    .attr("rx", 10)
+    .attr("fill", "#908B84");
+      // .attr("y", function(d,i){ return i * ( s * sSpacing); });
+}
+
+function rainbowOutlines(){
+    svg.selectAll('.songs')
+    .transition()
+    .duration(1000)
+    .attr("stroke", function(d,i){return colorScale[i]})
+    .attr("opacity", 1)
+    .attr("fill", "#333333");
+}
+
+function rainbowFills(){
+    svg.selectAll('.songs')
+    .attr("fill", "#908B84")
+    .transition()
+    .duration(1000)
+    .attr("fill", function(d,i){return colorScale[i]})
+    .attr("opacity", 0.5);
+}
+
+function makeNames(data){
+  var dots = svg.append("g")
+      .attr("class", "songNamesGroup")
+      .selectAll("rect").data(data);
+
+  console.log(data);
+
+  var dotsEnter = 
+    dots.enter()
+      .append('text')
+      .text(function(d,i ) {return d.name;})
+      .attr("class","song-name")
+      .attr("fill", "#bababa")
+        //position in center (x)
+      .attr("y", function(d,i){ return (350/15 * (i+1)) -7})
+      .attr("x", 175 + 8)
+      .attr("opacity", "0")
+      .transition().duration(500)
+      .attr("opacity", "1");
+}
+
+function shrinkNameBars(){
+  svg.selectAll(".songs")
+  .attr("width", 205);
+
+  svg.selectAll(".songNamesGroup")
+  .transition()
+  .duration(900)
+  .attr('transform', 'translate('+[-150,0]+')');
+
+  svg.selectAll(".songsGroup")
+  .transition()
+  .duration(900)
+  .attr('transform', 'translate('+[-150,0]+')');;
+}
+
+function showLengths(data){
+  var cubes = svg.append("g")
+    .attr("class","bars")
+      .selectAll('rect')
+      .data(data);
+
+  var cubesEnter = cubes
+      .enter()
+      .append('rect')   
+      .attr("class","lengths")
+      .attr("height",  350/20)
+      .attr("width", 0)
+      .attr("fill", function(d,i){ 
+        return pastelColors[i];})
+      .attr("y", function(d,i){ return (350/15 *i) + 2})
+      .attr("x", 250);
+
+      cubesEnter
+      .transition()
+      .duration(1200)
+      .attr("width", function(d,i){return durationScale(d.duration_ms);});
+  
+      cubesEnter
+          .on("mouseover", function(event,d,i){
+
+            durationToolTipText
+            .text(d.duration)
+            .attr("x", 40 / 2)  // Center the text horizontally
+            .attr("y", 20 / 2) // Center the text vertically
+            .attr("text-anchor", "middle")     // Align text horizontally to center
+            .attr("dominant-baseline", "middle") // Align text vertically to middle;
+    
+            durationToolTip
+              .attr("transform", 'translate('+[durationScale(d.duration_ms) + 260, 350/15 *(d.track_number-1) +1 ]+')')
+              .attr("opacity", 1.0)
+              
+            durationToolTipRect
+              .attr("stroke", function() {return colorScale[d.track_number-1]})
+              .attr("rx", 7)
+              .attr("ry", 7);
+
+          })
+          // .on("mousemove", mousemove)
+           .on("mouseleave", function(){
+              durationToolTip
+                .attr("opacity", 0);
+           });
+
+
+}
+
 /*Set up scroller
 *
 *   YAY!
 */
 
 var controller = new ScrollMagic.Controller();
+
+var albumCoverScene = new ScrollMagic.Scene({
+  triggerElement: '#intro3',
+  triggerHook: 0.1,
+  duration: "120%"
+})
+.setPin("#charli-cover")
+.addTo(controller);
+
+albumCoverScene.on("enter", function(){
+  svg.selectAll('.songsGroup').remove();
+  svg.selectAll('.songNamesGroup').remove();
+console.log("here");
+});
+
+var graySq = new ScrollMagic.Scene({
+  triggerElement: '#split-cover',
+  triggerHook: 0.1,
+  duration: "100%"
+})
+.addTo(controller);
+
+graySq.on("enter", function(){
+  // selectAll(".songs").remove();
+  makeBars(songInfo);
+  rainbowFills();
+  console.log("here1");
+});
+
+// add the class 'myclass' to the element with the id 'my-elem' for the duration of the scene
+// graySq.setClassToggle("#charli-cover", "fade");
+
+var splitSq = new ScrollMagic.Scene({
+  triggerElement: '#songVis',
+  triggerHook: 0.9
+})
+.addTo(controller);
+
+splitSq.on("enter", function(){
+  splitCover();
+  console.log("here2");
+});
+
+var rainbowSq = new ScrollMagic.Scene({
+  triggerElement: '#songVis',
+  triggerHook: 0.6
+})
+.addTo(controller);
+
+rainbowSq.on("enter", function(){
+  rainbowFills();
+  console.log("here3");
+});
+
+var rainbowSq2 = new ScrollMagic.Scene({
+  triggerElement: '#songVis',
+  triggerHook: 0.5
+})
+.addTo(controller);
+
+rainbowSq2.on("enter", function(){
+  rainbowOutlines();
+  console.log("here4");
+});
+
+var rainbowSqNames = new ScrollMagic.Scene({
+  triggerElement: '#songVis',
+  triggerHook: 0.3
+})
+.addTo(controller);
+
+rainbowSqNames.on("enter", function(){
+  
+  console.log("here4");
+});
 
 
 //songVis is the name of the vis
@@ -328,6 +602,7 @@ var songVisScene = new ScrollMagic.Scene({
 
 songVisScene.on("enter", function(){
   console.log('song at top');
+  shrinkNameBars();
   removeFeatures();
   });
 
@@ -349,9 +624,10 @@ var songVisSceneMid = new ScrollMagic.Scene({
 songVisSceneMid.on("enter", function(){
   console.log('song at mid');
   //make names appear
-  vis.attr("opacity", "1");
-  songNameVis(songInfo);
-  songVis(songInfo);
+  makeNames(songInfo);
+  // vis.attr("opacity", "1");
+  // songNameVis(songInfo);
+  // songVis(songInfo);
 });
 
 songVisSceneMid.on("leave", function(){
@@ -360,6 +636,25 @@ songVisSceneMid.on("leave", function(){
   console.log('song at mid exit');
   });
 
+
+//songVis is the name of the vis
+var lengthVisScene = new ScrollMagic.Scene({
+  triggerElement: '#lengthVis',
+  triggerHook: 0.15, 
+  duration: 200
+})
+.setPin("#lengthText")
+.addTo(controller); // Add Scene to ScrollMagic Controller
+
+lengthVisScene.on("enter", function(){
+  console.log('length at top');
+  showLengths(spotify_data);
+  });
+
+lengthVisScene.on("leave", function(){
+  console.log('length at end');
+  // removeLengths();
+  });
 
   //featureVis
   //we want to stick for 100px when this element is at 0, and for side text to appear

@@ -1,0 +1,5 @@
+charli_tracks = get_album_tracks('spotify:album:386IqvSuljaZsMjwDGGdLj')
+# blonde_df2_metadata = get_track_info(blonde_df1_tracks)
+# df1 = merge_frames(blonde_df1_tracks, blonde_df2_metadata)
+# lyrics_onto_frame(df1, 'frank ocean')
+charli_tracks = open('charli_spotify.json','a')
