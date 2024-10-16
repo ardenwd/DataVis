@@ -69,6 +69,8 @@ var durationToolTipText = durationToolTip.append('text')
   .attr("z-index", 4)
   .text("");
 
+  
+
 var artistToolTip = svg.append('g').attr("opacity",0);
 
 var artistToolTipRect = artistToolTip.append('rect')
@@ -255,11 +257,11 @@ function removeFeatures(){
   console.log("removeFeatures");
 
     svg.selectAll('.by-artist')
-      .attr("transition-timing-function","ease-in")
+      // .attr("transition-timing-function","ease-out")
       .transition()
       .duration(1200)
       .attr("x", function(d,i){ return 250; })
-      .attr("width", 0)
+      // .attr("width", 0)
       .remove();
 }
 
@@ -362,7 +364,8 @@ var dots = dotsG.append("g")
       .enter()
       .append('rect') 
       .attr("class","by-artist")
-      .attr("width", 0)
+      // .attr("width", 0)
+          .attr("width",s)
       .attr("height",  s)
       .attr("z-index",1)
       .attr("fill", function(d,i){ 
@@ -407,68 +410,36 @@ var dots = dotsG.append("g")
               artistToolTip
                 .attr("opacity", 0);
            });
+ })}
 
- })
-
-}
-
-
-function makeBars(data){
-  //make 13 divs and have the fill of each be img shifted a different percentage
-  songNameBars = svg.append("g")
-      .attr("class", "songsGroup")
-      .selectAll('rect')
-      .data(data);
-
-  console.log(data);
-  var barsEnter = songNameBars
-  .enter()
-  .append('rect') 
-  .attr("class","songs")
-  .attr("width", "350")
-  .attr("height", 350/15)
-  .attr("fill", "#333333")
-  // .attr("opacity", "0.5")
-  .attr("y", function(d,i){ return (350/15 *i + 1)})
-  .attr("x", 175);
-
-}
-
-function splitCover(){
-  svg.selectAll('.songs')
-    .transition()
-    .duration(1000)
-    .attr("height", 350/(17.5))
-    .attr("ry", 10)
-    .attr("rx", 10)
-    .attr("fill", "#908B84");
-      // .attr("y", function(d,i){ return i * ( s * sSpacing); });
-}
-
-function rainbowOutlines(){
-    svg.selectAll('.songs')
-    .transition()
-    .duration(1000)
-    .attr("stroke", function(d,i){return colorScale[i]})
-    .attr("opacity", 1)
-    .attr("fill", "#333333");
-}
-
-function rainbowFills(){
-    svg.selectAll('.songs')
-    .attr("fill", "#908B84")
-    .transition()
-    .duration(1000)
-    .attr("fill", function(d,i){return colorScale[i]})
-    .attr("opacity", 0.5);
-}
 
 function makeNames(data){
-  var dots = svg.append("g")
-      .attr("class", "songNamesGroup")
-      .selectAll("rect").data(data);
+  var namesG = svg.append("g")
+    .attr("class", "songNames")
+    .attr("transform", 'translate('+ [175,0]+')');
 
-  console.log(data);
+
+  songNameBars = namesG.append("g")
+    .attr("class", "namesRectGroup")
+    .selectAll('rect')
+    .data(data);
+
+  var barsEnter = songNameBars
+    .enter()
+    .append('rect') 
+    .attr("class","song-bar")
+    .attr("height", 350/17.5)
+    .attr("width", "350")
+    .attr("ry", 10)
+    .attr("rx", 10)
+    .attr("y", function(d,i){ return (350/15 *i + 1)})
+    .attr("fill", "#333")
+    .attr("stroke", function(d,i){return colorScale[i]})
+    .attr("opacity", 1);
+
+      var dots = namesG.append("g")
+      .attr("class", "namesTextGroup")
+      .selectAll("text").data(data);
 
   var dotsEnter = 
     dots.enter()
@@ -477,26 +448,39 @@ function makeNames(data){
       .attr("class","song-name")
       .attr("fill", "#bababa")
         //position in center (x)
+      .attr("x", 8)
       .attr("y", function(d,i){ return (350/15 * (i+1)) -7})
-      .attr("x", 175 + 8)
-      .attr("opacity", "0")
-      .transition().duration(500)
       .attr("opacity", "1");
+
 }
 
-function shrinkNameBars(){
-  svg.selectAll(".songs")
+
+function centerNameBars(){
+  //make bars full width
+   svg.selectAll(".song-bar")
+    .transition()
+    .duration(900)
+    .attr("width", "350");
+
+    //center whole group
+    svg.selectAll('.songNames')
+      .transition()
+      .duration(900)
+      .attr("transform", 'translate('+ [175,0]+')');
+}
+
+
+function shiftNamesLeft(){
+  //make bars smaller
+  svg.selectAll(".song-bar")
+  .transition()
+  .duration(900)
   .attr("width", 205);
 
-  svg.selectAll(".songNamesGroup")
+  svg.selectAll(".songNames")
   .transition()
   .duration(900)
-  .attr('transform', 'translate('+[-150,0]+')');
-
-  svg.selectAll(".songsGroup")
-  .transition()
-  .duration(900)
-  .attr('transform', 'translate('+[-150,0]+')');;
+  .attr("transform", 'translate('+ [0,0]+')');;
 }
 
 function showLengths(data){
@@ -569,118 +553,46 @@ var albumCoverScene = new ScrollMagic.Scene({
 .addTo(controller);
 
 albumCoverScene.on("enter", function(){
-  svg.selectAll('.songsGroup').remove();
-  svg.selectAll('.songNamesGroup').remove();
-console.log("here");
+
+  svg.selectAll(".songNames").remove();
 });
 
-var graySq = new ScrollMagic.Scene({
-  triggerElement: '#split-cover',
-  triggerHook: 0.1,
-  duration: "100%"
-})
-.addTo(controller);
-
-graySq.on("enter", function(){
-  // selectAll(".songs").remove();
-  makeBars(songInfo);
-  rainbowFills();
-  console.log("here1");
-});
-
-// add the class 'myclass' to the element with the id 'my-elem' for the duration of the scene
-// graySq.setClassToggle("#charli-cover", "fade");
-
-var splitSq = new ScrollMagic.Scene({
+//make names
+var makeNamesScene = new ScrollMagic.Scene({
   triggerElement: '#songVis',
-  triggerHook: 0.9
-})
-.addTo(controller);
-
-splitSq.on("enter", function(){
-  splitCover();
-  console.log("here2");
-});
-
-var rainbowSq = new ScrollMagic.Scene({
-  triggerElement: '#songVis',
-  triggerHook: 0.6
-})
-.addTo(controller);
-
-rainbowSq.on("enter", function(){
-  rainbowFills();
-  console.log("here3");
-});
-
-var rainbowSq2 = new ScrollMagic.Scene({
-  triggerElement: '#songVis',
-  triggerHook: 0.5
-})
-.addTo(controller);
-
-rainbowSq2.on("enter", function(){
-  rainbowOutlines();
-  console.log("here4");
-});
-
-var rainbowSqNames = new ScrollMagic.Scene({
-  triggerElement: '#songVis',
-  triggerHook: 0.3
-})
-.addTo(controller);
-
-rainbowSqNames.on("enter", function(){
-  
-  console.log("here4");
-});
-
-
-//songVis is the name of the vis
-var songVisScene = new ScrollMagic.Scene({
-  triggerElement: '#songVis',
-  triggerHook: 0.15, 
+  triggerHook: 0.9,
   duration: 200
 })
-.setPin("#songText")
-.addTo(controller); // Add Scene to ScrollMagic Controller
+.addTo(controller);
 
-songVisScene.on("enter", function(){
-  console.log('song at top');
-  shrinkNameBars();
-  removeFeatures();
-  });
-
-
-songVisScene.on("leave", function(){
-  console.log('song at top leaving');
-  //push squares to the middle and fade text
-
-});
-
-//songVis is the name of the vis
-var songVisSceneMid = new ScrollMagic.Scene({
-  triggerElement: '#songVis',
-  triggerHook: 0.6
-  // duration: 300
-})
-.addTo(controller); // Add Scene to ScrollMagic Controller
-
-songVisSceneMid.on("enter", function(){
-  console.log('song at mid');
-  //make names appear
+makeNamesScene.on("enter", function(){
+  console.log("making names");
   makeNames(songInfo);
-  // vis.attr("opacity", "1");
-  // songNameVis(songInfo);
-  // songVis(songInfo);
 });
 
-songVisSceneMid.on("leave", function(){
-  removeSongs();
-  vis.attr("opacity", "0");
-  console.log('song at mid exit');
+var centerNamesScene = new ScrollMagic.Scene({
+triggerElement: '#lengthVis',
+  triggerHook: 0.95, 
+  duration: 200
+})
+.addTo(controller);
+
+centerNamesScene.on("enter", function(){
+  console.log('center names');
+  centerNameBars();
   });
 
+var shiftNamesScene = new ScrollMagic.Scene({
+triggerElement: '#lengthVis',
+  triggerHook: 0.75, 
+  duration: 200
+})
+.addTo(controller);
+
+shiftNamesScene.on("enter", function(){
+  console.log('shift names');
+  shiftNamesLeft();
+  });
 
 //songVis is the name of the vis
 var lengthVisScene = new ScrollMagic.Scene({
@@ -694,6 +606,7 @@ var lengthVisScene = new ScrollMagic.Scene({
 lengthVisScene.on("enter", function(){
   console.log('length at top');
   showLengths(spotify_data);
+  shiftNamesLeft();
   });
 
 lengthVisScene.on("leave", function(){
@@ -716,6 +629,7 @@ var featureVisScene = new ScrollMagic.Scene({
 
 featureVisScene.on("enter", function(){
   featureVis(featuresList);
+  shiftNamesLeft();
   console.log('feature at top');});
 
   featureVisScene.on("leave", function(){
