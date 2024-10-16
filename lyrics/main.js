@@ -14,6 +14,7 @@ var spotify_data;
 var max_duration = 0;
 var durationScale;
 var songNameBars;
+var featuresList=[];
 
 var lyricDataset;
 
@@ -68,6 +69,19 @@ var durationToolTipText = durationToolTip.append('text')
   .attr("z-index", 4)
   .text("");
 
+var artistToolTip = svg.append('g').attr("opacity",0);
+
+var artistToolTipRect = artistToolTip.append('rect')
+  .attr("class","artistToolTip")
+  .attr("fill", "#fff")
+  .attr("height", 24)
+  .attr("width", 170);
+  //fill,height,width,stroke;
+
+var artistToolTipText = artistToolTip.append('text')
+  .attr("class","artistToolTipText")
+  .attr("z-index", 4)
+  .text("");
 
 //example of how to do mouseover    
 // Three function that changes the tooltip when user hovers / moves / leaves a cell
@@ -166,13 +180,13 @@ var artists = [];
 //go through the song
   data.forEach((d,i) => {
     var featuresBySong = [];
-    
     var index;
     
     //name: , features: , length: ,
     var name = d.song.title;
     var fIndex = 0;
     //go in to each artist
+    
     d.song.featured_artists.forEach((d)=>{
       //add all the artists to an array
       index = temp.indexOf(d.name);
@@ -188,15 +202,21 @@ var artists = [];
       fIndex++;
     }
     );
-
+    
     songInfo.push({name: d.song.title,
     features: d.song.featured_artists}
     );
     
     features=songInfo[i].features;
+
+    featuresBySong.push("Charli XCX");
     features.forEach((d) => {featuresBySong.push(d.name);});
     songInfo[i].features=featuresBySong;
-  });
+
+    featuresList.push(songInfo[i].features);
+    
+  
+  });  
 }
 
 
@@ -234,12 +254,12 @@ function lyricVis(dataset){
 function removeFeatures(){
   console.log("removeFeatures");
 
-    vis.selectAll('.by-artist').attr("y", function(d,i){ return d.num * ( s * sSpacing); })
-      .attr("x", function(d,i){ return middleIsh  - (s/2) +(d.featureNum * (s * sSpacing) + (s * sSpacing)) - s*2; })
+    svg.selectAll('.by-artist')
+      .attr("transition-timing-function","ease-in")
       .transition()
       .duration(1200)
-      .attr("y", function(d,i){ return d.num * ( s * sSpacing); })
-      .attr("x", function(d,i){ return middleIsh  - (s/2) -  s*2 ; })
+      .attr("x", function(d,i){ return 250; })
+      .attr("width", 0)
       .remove();
 }
 
@@ -331,43 +351,65 @@ function featureVis(data){
   console.log("featureVis");
   //scatter plot of the song x artists (x,y), charli as 1, 2 is the next, 3 troye, etc
 removeLyrics();
- 
-var dots = vis.append("g")
+var dotsG = svg.append("g")
+ data.forEach((v,f)=>{
+var dots = dotsG.append("g")
       .selectAll('rect')
-      .data(data);
+      .data(v);
 
 //artist, song name
   var dotsEnter = dots
       .enter()
       .append('rect') 
       .attr("class","by-artist")
-      .attr("width", s)
+      .attr("width", 0)
       .attr("height",  s)
+      .attr("z-index",1)
       .attr("fill", function(d,i){ 
-        return colorScale[d.num];})
-
-          .attr("y", function(d,i){ return d.num * ( s * sSpacing); })
-          .attr("x", function(d,i){ return middleIsh  - (s/2) -  s*2 ; });
+              if(i!=0){return colorScale[f];}
+              else{return pastelColors[f];}})
+      .attr("y", function(){return 5 + f * 350/15; })
+      .attr("x", function(d,i){ return 250})
+      .attr("stroke", function(d,i){ 
+          if(i==0){return colorScale[f];}
+          else{return "none";}});;
       dotsEnter
       .transition()
       .duration(1200)
-          .attr("y", function(d,i){ return d.num * ( s * sSpacing); })
-          .attr("x", function(d,i){ return middleIsh  - (s/2) +(d.featureNum * (s * sSpacing) + (s * sSpacing)) - s*2; });
-          // .attr("z-index",1
-          
-      dotsEnter
-          .on("mouseover", function(event,d,i){
+          .attr("width",s)
+          .attr("y", function(){ return 5+ f * ( 350/15); })
+          .attr("x", function(d,i){ return 250  +(i * (350/15)) ; });
+
+          dotsEnter
+            .on("mouseover", function(event,d,i){
             var[x,y] = d3.pointer(event);
             
-            nameText.text(d.artist)
-            .style("fill", "#f1ede9")
-            .attr("y", (d.num + 1) * s * sSpacing)
-            .attr("x", function(d,i){ return middleIsh + (s * sSpacing * 4); });
+            artistToolTipText
+            .attr("x", 170 / 2)  // Center the text horizontally
+            .attr("y", 24 / 2 + 1) // Center the text vertically
+            .attr("text-anchor", "middle")     // Align text horizontally to center
+            .attr("dominant-baseline", "middle") // Align text vertically to middle
+            .text(d)
+            .attr("z-index", 5);
+          
+            artistToolTip
+              .attr("transform", 'translate('+[x,y]+')')
+              .attr("opacity", 1.0)
+              
+            artistToolTipRect
+              .attr("stroke", function() {return colorScale[f]})
+              .attr("rx", 7)
+              .attr("ry", 7);
+
           })
           // .on("mousemove", mousemove)
            .on("mouseleave", function(){
-            nameText.text(" ");
+              artistToolTip
+                .attr("opacity", 0);
            });
+
+ })
+
 }
 
 
@@ -504,8 +546,11 @@ function showLengths(data){
               durationToolTip
                 .attr("opacity", 0);
            });
+}
 
-
+function shrinkLengthBars(){
+  var bars = svg.selectAll(".lengths");
+  bars.transition().duration(600).attr("width", 0);
 }
 
 /*Set up scroller
@@ -653,7 +698,9 @@ lengthVisScene.on("enter", function(){
 
 lengthVisScene.on("leave", function(){
   console.log('length at end');
-  // removeLengths();
+  shrinkLengthBars();
+  //make tooltip invisible
+  durationToolTip.attr("opacity", 0);
   });
 
   //featureVis
@@ -668,32 +715,13 @@ var featureVisScene = new ScrollMagic.Scene({
 .addTo(controller); // Add Scene to ScrollMagic Controller
 
 featureVisScene.on("enter", function(){
-  
+  featureVis(featuresList);
   console.log('feature at top');});
 
   featureVisScene.on("leave", function(){
+    removeFeatures();
     console.log('feature at top leaving');
   });
-
-
-
-  //featureVis midPoint
-var featureVisSceneMid = new ScrollMagic.Scene({
-  triggerElement: '#featureVis',
-  triggerHook: 0.6
-    
-})
-.addTo(controller); // Add Scene to ScrollMagic Controller
-
-featureVisSceneMid.on("enter", function(){
-  featureVis(songData);
-  console.log('feature at mid');});
-
-
-featureVisSceneMid.on("leave", function(){
-  //make the artists disappear
-
-  console.log('feature at mid leaving');});
 
   //lyricVis
   //we want to stick for 100px when this element is at 0, and for side text to appear
@@ -734,6 +762,6 @@ lyricVisSceneMid.on("enter", function(){
 lyricVisSceneMid.on("leave", function(){
   //make the artists disappear
   
-  featureVis(songData);
+  // featureVis(songData);
   songVis(songInfo);
   console.log('lyric at mid leaving');});

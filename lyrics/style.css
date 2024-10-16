@@ -53,13 +53,19 @@ svg {
   /* opacity: 1; */
 }
 
-.durationToolTipText {
+.durationToolTipText,
+.artistToolTipText {
   font-weight: normal;
   font-family: monospace;
   font-size: 0.46em;
   color: #111;
   /* opacity: 1; */
 }
+
+.artistToolTipText {
+  font-size: 0.5em;
+}
+
 .tooltip {
   /* flex: 1; */
   width: fit-content;
