@@ -13,6 +13,8 @@ var data;
 var spotify_data;
 var max_duration = 0;
 var durationScale;
+var uniqueScale;
+var numUniqueWords = [83, 115, 80, 123, 209, 115, 88, 133, 124, 91, 78, 140, 283, 103, 118];
 var songNameBars;
 var featuresList=[];
 
@@ -27,6 +29,7 @@ var s = 17;
 var sSpacing = 1.25;
 var leftAlign = 0;
 
+uniqueScale = d3.scaleLinear([0, 240],[0, 334]);  // The range is the visual space (in pixels)
 
 var svg = d3.select("#vis")
     .append("svg")
@@ -120,15 +123,19 @@ var simulation = d3.forceSimulation(nodes)
 
 //load at the start of the program
 //process the data
-d3.csv('charli.csv', dataPreprocessor).then(function(dataset) {
-  lyricDataset = dataset;
-  //load the json file
-  d3.json('Lyrics_Charli.json').then(function(data){
+// d3.csv('charli.csv', dataPreprocessor).then(function(dataset) {
+//   lyricDataset = dataset;
+//   console.log("the dataset is")
+//   console.log(dataset);
+//   //load the json file
+  
+// });
+
+d3.json('Lyrics_Charli.json').then(function(data){
     list = data.tracks;
     console.log(list);
     dataPreprocessorSongs(list);
   });
-});
 
  //load spotify file
   d3.json('charli_spotify.json').then(function(values){
@@ -149,6 +156,7 @@ durationScale = d3.scaleLinear([0, max_duration],[0, 390]);  // The range is the
 
   return data;
 }
+
 function convertMsToMinutesSeconds(ms) {
     // Convert milliseconds to total seconds
     let totalSeconds = Math.floor(ms / 1000);
@@ -220,10 +228,6 @@ var artists = [];
   
   });  
 }
-
-
-
-
 
 function lyricVis(dataset){
   console.log("lyricVis");
@@ -396,7 +400,7 @@ var dots = dotsG.append("g")
             .attr("z-index", 5);
           
             artistToolTip
-              .attr("transform", 'translate('+[x,y]+')')
+              .attr("transform", 'translate('+[x+40,y]+')')
               .attr("opacity", 1.0)
               
             artistToolTipRect
@@ -537,6 +541,64 @@ function shrinkLengthBars(){
   bars.transition().duration(600).attr("width", 0);
 }
 
+function showUniques(data){
+
+  console.log("uniques data:");
+  console.log(data);
+
+  var cubes = svg.append("g")
+    .attr("class","bars")
+      .selectAll('rect')
+      .data(data);
+
+  var cubesEnter = cubes
+      .enter()
+      .append('rect')   
+      .attr("class","uniques")
+      .attr("height",  350/20)
+      .attr("width", 0)
+      .attr("fill", function(d,i){ 
+        return pastelColors[i];})
+      .attr("y", function(d,i){ return (350/15 *i) + 2})
+      .attr("x", 250);
+
+      cubesEnter
+      .transition()
+      .duration(1200)
+      .attr("width", function(d,i){return uniqueScale(numUniqueWords[i]);});
+  
+      cubesEnter
+          .on("mouseover", function(event,d,i){
+
+            durationToolTipText
+            .text(d)
+            .attr("x", 40 / 2)  // Center the text horizontally
+            .attr("y", 20 / 2) // Center the text vertically
+            .attr("text-anchor", "middle")     // Align text horizontally to center
+            .attr("dominant-baseline", "middle") // Align text vertically to middle;
+    
+            durationToolTip
+              .attr("transform", function(){return 'translate('+[uniqueScale(d) + 260, numUniqueWords.indexOf(d) * 350/15]+')'})
+              .attr("opacity", 1.0)
+              
+            durationToolTipRect
+              .attr("stroke", function() {return colorScale[i-1]})
+              .attr("rx", 7)
+              .attr("ry", 7);
+
+          })
+          // .on("mousemove", mousemove)
+           .on("mouseleave", function(){
+              durationToolTip
+                .attr("opacity", 0);
+           });
+}
+
+function shrinkUniqueBars(){
+  var bars = svg.selectAll(".uniques");
+  bars.transition().duration(600).attr("width", 0);
+}
+
 /*Set up scroller
 *
 *   YAY!
@@ -571,7 +633,7 @@ makeNamesScene.on("enter", function(){
 });
 
 var centerNamesScene = new ScrollMagic.Scene({
-triggerElement: '#lengthVis',
+triggerElement: '#featureVis',
   triggerHook: 0.95, 
   duration: 200
 })
@@ -583,7 +645,7 @@ centerNamesScene.on("enter", function(){
   });
 
 var shiftNamesScene = new ScrollMagic.Scene({
-triggerElement: '#lengthVis',
+triggerElement: '#featureVis',
   triggerHook: 0.75, 
   duration: 200
 })
@@ -592,28 +654,6 @@ triggerElement: '#lengthVis',
 shiftNamesScene.on("enter", function(){
   console.log('shift names');
   shiftNamesLeft();
-  });
-
-//songVis is the name of the vis
-var lengthVisScene = new ScrollMagic.Scene({
-  triggerElement: '#lengthVis',
-  triggerHook: 0.15, 
-  duration: 200
-})
-.setPin("#lengthText")
-.addTo(controller); // Add Scene to ScrollMagic Controller
-
-lengthVisScene.on("enter", function(){
-  console.log('length at top');
-  showLengths(spotify_data);
-  shiftNamesLeft();
-  });
-
-lengthVisScene.on("leave", function(){
-  console.log('length at end');
-  shrinkLengthBars();
-  //make tooltip invisible
-  durationToolTip.attr("opacity", 0);
   });
 
   //featureVis
@@ -634,8 +674,54 @@ featureVisScene.on("enter", function(){
 
   featureVisScene.on("leave", function(){
     removeFeatures();
+    artistToolTip.attr("opacity", 0);
     console.log('feature at top leaving');
   });
+
+//songVis is the name of the vis
+var lengthVisScene = new ScrollMagic.Scene({
+  triggerElement: '#lengthVis',
+  triggerHook: 0.15, 
+  duration: 200
+})
+.setPin("#lengthText")
+.addTo(controller); // Add Scene to ScrollMagic Controller
+
+lengthVisScene.on("enter", function(){
+  console.log('length at top');
+  artistToolTip.attr("opacity", 0);
+  showLengths(spotify_data);
+  });
+
+lengthVisScene.on("leave", function(){
+  console.log('length at end');
+  shrinkLengthBars();
+  //make tooltip invisible
+  durationToolTip.attr("opacity", 0);
+  });
+
+
+//songVis is the name of the vis
+var uniqueVisScene = new ScrollMagic.Scene({
+  triggerElement: '#uniqueVis',
+  triggerHook: 0.15, 
+  duration: 200
+})
+.setPin("#uniqueText")
+.addTo(controller); // Add Scene to ScrollMagic Controller
+
+uniqueVisScene.on("enter", function(){
+  console.log('unique at top');
+  showUniques(numUniqueWords);
+  });
+
+uniqueVisScene.on("leave", function(){
+  console.log('unique at end');
+  shrinkUniqueBars();
+  //make tooltip invisible
+  durationToolTip.attr("opacity", 0);
+  });
+
 
   //lyricVis
   //we want to stick for 100px when this element is at 0, and for side text to appear
